@@ -58,9 +58,10 @@ public class ArticleWriteServiceImpl implements ArticleWriteService {
         });
     }
 
-    public void updateArticle(ArticleDTO article) {
+    public Long updateArticle(ArticleDTO article) {
         // 调用服务方法更新文章
         articleMapper.updateById(article);
+        return article.getId();
     }
 
     private Long insertArticle(ArticleDTO article) {
