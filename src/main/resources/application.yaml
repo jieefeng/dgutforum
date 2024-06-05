@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: dgutforum
+  rabbitmq:
+    host: 192.168.80.131
+    port: 6379
+    name: itheima
+    password: 123321
+    virtual-host: dgutforum
+    pool-size: 10
