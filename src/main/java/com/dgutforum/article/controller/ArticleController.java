@@ -28,7 +28,7 @@ public class ArticleController {
      */
     @PostMapping(path = "post")
     public ResVo<Long> post(@RequestBody ArticlePostReq req, HttpServletResponse response) throws IOException {
-        Long id = articleWriteService.saveArticle(req, ReqInfoContext.getReqInfo().getUserId());
+        Long id = articleWriteService.saveArticle(req, 1L/*ReqInfoContext.getReqInfo().getUserId()*/);
         // 如果使用后端重定向，可以使用下面两种策略
 //        return "redirect:/article/detail/" + id;
 //        response.sendRedirect("/article/detail/" + id);

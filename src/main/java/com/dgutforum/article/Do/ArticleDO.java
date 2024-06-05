@@ -1,4 +1,4 @@
-package com.dgutforum.article.entity;
+package com.dgutforum.article.Do;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dgutforum.Common.dto.BaseDO;
