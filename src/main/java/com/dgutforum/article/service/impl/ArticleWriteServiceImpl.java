@@ -2,6 +2,7 @@ package com.dgutforum.article.service.impl;
 
 
 import com.dgutforum.Common.util.NumUtil;
+import com.dgutforum.article.Do.ArticleDO;
 import com.dgutforum.article.converter.ArticleConverter;
 
 import com.dgutforum.article.entity.ArticleDTO;
@@ -57,8 +58,9 @@ public class ArticleWriteServiceImpl implements ArticleWriteService {
         });
     }
 
-    private Long updateArticle(ArticleDTO article) {
-        return null;
+    public void updateArticle(ArticleDTO article) {
+        // 调用服务方法更新文章
+        articleMapper.updateById(article);
     }
 
     private Long insertArticle(ArticleDTO article) {
