@@ -2,10 +2,9 @@ package com.dgutforum.article.service.impl;
 
 
 import com.dgutforum.Common.util.NumUtil;
-import com.dgutforum.article.Do.ArticleDO;
 import com.dgutforum.article.converter.ArticleConverter;
 
-import com.dgutforum.article.entity.ArticleDTO;
+import com.dgutforum.article.entity.Article;
 import com.dgutforum.article.mapper.ArticleMapper;
 import com.dgutforum.article.service.ArticleWriteService;
 import com.dgutforum.article.vo.ArticlePostReq;
@@ -37,7 +36,7 @@ public class ArticleWriteServiceImpl implements ArticleWriteService {
      */
     @Override
     public Long saveArticle(ArticlePostReq req, Long author) {
-        ArticleDTO article = ArticleConverter.toArticleDo(req, author);
+        Article article = ArticleConverter.toArticle(req, author);
         return transactionTemplate.execute(new TransactionCallback<Long>() {
             @Override
             public Long doInTransaction(TransactionStatus status) {
@@ -58,13 +57,13 @@ public class ArticleWriteServiceImpl implements ArticleWriteService {
         });
     }
 
-    public Long updateArticle(ArticleDTO article) {
+    public Long updateArticle(Article article) {
         // 调用服务方法更新文章
         articleMapper.updateById(article);
         return article.getId();
     }
 
-    private Long insertArticle(ArticleDTO article) {
+    private Long insertArticle(Article article) {
         // 插入文章
         articleMapper.insert(article);
         // 返回生成的主键 ID

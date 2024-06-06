@@ -41,21 +41,6 @@ public class ArticleDO extends BaseDO {
     private String context;
 
     /**
-     * 是否官方
-     */
-    private Integer officalStat;
-
-    /**
-     * 是否置顶
-     */
-    private Integer toppingStat;
-
-    /**
-     * 是否加精
-     */
-    private Integer creamStat;
-
-    /**
      * 是否删除
      */
     private Integer deleted;

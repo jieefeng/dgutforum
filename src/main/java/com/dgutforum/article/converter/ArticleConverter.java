@@ -1,8 +1,7 @@
 package com.dgutforum.article.converter;
 
 
-import com.dgutforum.article.Do.ArticleDO;
-import com.dgutforum.article.entity.ArticleDTO;
+import com.dgutforum.article.entity.Article;
 import com.dgutforum.article.vo.ArticlePostReq;
 
 /**
@@ -11,8 +10,8 @@ import com.dgutforum.article.vo.ArticlePostReq;
  */
 public class ArticleConverter {
 
-    public static ArticleDTO toArticleDo(ArticlePostReq req, Long author) {
-        ArticleDTO article = new ArticleDTO();
+    public static Article toArticle(ArticlePostReq req, Long author) {
+        Article article = new Article();
         // 设置作者ID
         article.setUserId(author);
         article.setId(req.getArticleId());

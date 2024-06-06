@@ -1,6 +1,7 @@
 package com.dgutforum.Common.result;
 
 
+import com.dgutforum.Common.result.eunms.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,7 @@
 package com.dgutforum.Common.result;
 
 
+import com.dgutforum.Common.result.eunms.StatusEnum;
 import lombok.Data;
 
 import java.io.Serializable;

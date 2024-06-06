@@ -1,4 +1,4 @@
-package com.dgutforum.Common.result;
+package com.dgutforum.Common.result.eunms;
 
 import lombok.Getter;
 
