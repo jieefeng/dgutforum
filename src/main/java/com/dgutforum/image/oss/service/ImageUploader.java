@@ -14,14 +14,12 @@ public interface ImageUploader {
     Set<MediaType> STATIC_IMG_TYPE = new HashSet<>(Arrays.asList(MediaType.IMAGE_PNG, MediaType.IMAGE_JPG, MediaType.IMAGE_GIF));
 
 
-
     /**
      * 文件上传
-     *
-     * @param input
+     * @param bytes
      * @param fileType
      * @return
      */
-    String upload(InputStream input, String fileType);
+    String upload(byte[] bytes, String fileType);
 
 }

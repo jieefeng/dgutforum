@@ -53,7 +53,7 @@ public class Article implements Serializable {
     /**
      * 最后更新时间
      */
-    private LocalDateTime lastUpdateTime;
+    private LocalDateTime UpdateTime;
 
     /**
      * 分类

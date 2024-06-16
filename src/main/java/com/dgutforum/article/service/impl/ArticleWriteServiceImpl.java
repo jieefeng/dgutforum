@@ -1,13 +1,16 @@
 package com.dgutforum.article.service.impl;
 
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dgutforum.common.util.NumUtil;
 import com.dgutforum.article.converter.ArticleConverter;
 
 import com.dgutforum.article.entity.Article;
+import com.dgutforum.image.service.ImageService;
 import com.dgutforum.mapper.ArticleMapper;
 import com.dgutforum.article.service.ArticleWriteService;
 import com.dgutforum.article.vo.ArticlePostReq;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +23,16 @@ import java.time.LocalDateTime;
 
 @Slf4j
 @Service
-public class ArticleWriteServiceImpl implements ArticleWriteService {
+public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> implements ArticleWriteService {
 
     @Autowired
     private TransactionTemplate transactionTemplate;
 
     @Autowired
     private ArticleMapper articleMapper;
+
+    @Resource
+    private ImageService imageService;
 
     /**
      * 保存或更新文章
@@ -36,19 +42,24 @@ public class ArticleWriteServiceImpl implements ArticleWriteService {
      */
     @Override
     public Long saveArticle(ArticlePostReq req, Long author) {
+        //请请求体转为数据库实体
         Article article = ArticleConverter.toArticle(req, author);
+        //将图片转为url链接
+        if(article != null)
+            article.setPicture(imageService.saveImage(article.getPicture()));
+
         return transactionTemplate.execute(new TransactionCallback<Long>() {
             @Override
             public Long doInTransaction(TransactionStatus status) {
                 Long articleId;
                 if (NumUtil.nullOrZero(req.getArticleId())) {
                     article.setCreateTime(LocalDateTime.now());
-                    article.setLastUpdateTime(LocalDateTime.now());
+                    article.setUpdateTime(LocalDateTime.now());
                     articleId = insertArticle(article);
                     log.info("文章发布成功! title={}", req.getTitle());
                 } else {
                     article.setCreateTime(LocalDateTime.now());
-                    article.setLastUpdateTime(LocalDateTime.now());
+                    article.setUpdateTime(LocalDateTime.now());
                     articleId = updateArticle(article);
                     log.info("文章更新成功！ title={}", article.getTitle());
                 }

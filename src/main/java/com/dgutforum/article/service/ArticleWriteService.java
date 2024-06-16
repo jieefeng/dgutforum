@@ -1,9 +1,11 @@
 package com.dgutforum.article.service;
 
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.dgutforum.article.entity.Article;
 import com.dgutforum.article.vo.ArticlePostReq;
 
-public interface ArticleWriteService {
+public interface ArticleWriteService extends IService<Article> {
 
     /**
      * 保存or更新文章
