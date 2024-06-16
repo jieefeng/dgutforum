@@ -1,4 +1,4 @@
-package com.dgutforum.Common.dto;
+package com.dgutforum.common.dto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

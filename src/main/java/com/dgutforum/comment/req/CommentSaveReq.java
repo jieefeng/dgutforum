@@ -1,4 +1,4 @@
-package com.dgutforum.comment.vo;
+package com.dgutforum.comment.req;
 
 import lombok.Data;
 

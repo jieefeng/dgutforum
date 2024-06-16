@@ -1,4 +1,4 @@
-package com.dgutforum.comment.mapper;
+package com.dgutforum.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.dgutforum.comment.entity.Comment;

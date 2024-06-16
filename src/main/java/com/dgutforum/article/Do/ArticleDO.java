@@ -1,7 +1,7 @@
 package com.dgutforum.article.Do;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.dgutforum.Common.dto.BaseDO;
+import com.dgutforum.common.dto.BaseDO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

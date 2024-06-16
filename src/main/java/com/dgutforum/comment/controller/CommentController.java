@@ -1,16 +1,19 @@
 package com.dgutforum.comment.controller;
 
-import com.dgutforum.Common.result.ResVo;
+import com.dgutforum.comment.DTO.CommentDto;
+import com.dgutforum.comment.req.CommentListReq;
+import com.dgutforum.comment.vo.CommentVo;
+import com.dgutforum.common.result.ResVo;
 import com.dgutforum.comment.converter.CommentConverter;
 import com.dgutforum.comment.entity.Comment;
 import com.dgutforum.comment.service.CommentService;
-import com.dgutforum.comment.vo.CommentSaveReq;
+import com.dgutforum.comment.req.CommentSaveReq;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.dgutforum.Common.result.eunms.StatusEnum.COMMENT_NOT_EXISTS;
+import static com.dgutforum.common.result.eunms.StatusEnum.COMMENT_NOT_EXISTS;
 
 @RestController
 @RequestMapping(path = "comment")
@@ -66,23 +69,13 @@ public class CommentController {
         return ResVo.ok(commentService.getById(id));
     }
 
-    @GetMapping("/article/{articleId}")
-    public ResVo<List<Comment>> getCommentsByArticleId(@PathVariable Long articleId) {
-        return commentService.getCommentsByArticleId(articleId);
+//    @GetMapping("/article/{articleId}")
+//    public ResVo<List<Comment>> getCommentsByArticleId(@PathVariable Long articleId) {
+//        return commentService.getCommentsByArticleId(articleId);
+//    }
+
+    @PostMapping(path = "list")
+    public ResVo<List<CommentDto>> list(CommentListReq commentListReq){
+      return commentService.list(commentListReq);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

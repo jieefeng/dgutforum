@@ -1,4 +1,4 @@
-package com.dgutforum.Common.util;
+package com.dgutforum.common.util;
 
 
 public class NumUtil {

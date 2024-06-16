@@ -1,6 +1,6 @@
 package com.dgutforum.article.controller;
 
-import com.dgutforum.Common.result.ResVo;
+import com.dgutforum.common.result.ResVo;
 import com.dgutforum.article.service.ArticleWriteService;
 import com.dgutforum.article.vo.ArticlePostReq;
 import jakarta.annotation.Resource;

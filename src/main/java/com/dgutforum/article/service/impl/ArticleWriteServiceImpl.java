@@ -1,16 +1,16 @@
 package com.dgutforum.article.service.impl;
 
 
-import com.dgutforum.Common.util.NumUtil;
+import com.dgutforum.common.util.NumUtil;
 import com.dgutforum.article.converter.ArticleConverter;
 
 import com.dgutforum.article.entity.Article;
-import com.dgutforum.article.mapper.ArticleMapper;
+import com.dgutforum.mapper.ArticleMapper;
 import com.dgutforum.article.service.ArticleWriteService;
 import com.dgutforum.article.vo.ArticlePostReq;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
@@ -22,10 +22,10 @@ import java.time.LocalDateTime;
 @Service
 public class ArticleWriteServiceImpl implements ArticleWriteService {
 
-    @Resource
+    @Autowired
     private TransactionTemplate transactionTemplate;
 
-    @Resource
+    @Autowired
     private ArticleMapper articleMapper;
 
     /**

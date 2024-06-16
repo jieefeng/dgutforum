@@ -1,10 +1,8 @@
 package com.dgutforum.comment.converter;
 
 
-import com.dgutforum.article.entity.Article;
-import com.dgutforum.article.vo.ArticlePostReq;
 import com.dgutforum.comment.entity.Comment;
-import com.dgutforum.comment.vo.CommentSaveReq;
+import com.dgutforum.comment.req.CommentSaveReq;
 
 import java.time.LocalDateTime;
 
