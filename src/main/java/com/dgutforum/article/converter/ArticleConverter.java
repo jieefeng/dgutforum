@@ -1,6 +1,8 @@
 package com.dgutforum.article.converter;
 
 
+
+import com.dgutforum.article.dto.ArticleUserDto;
 import com.dgutforum.article.entity.Article;
 import com.dgutforum.article.vo.ArticlePostReq;
 
@@ -18,7 +20,7 @@ public class ArticleConverter {
         article.setTitle(req.getTitle());
         article.setPicture(req.getCover() == null ? "" : req.getCover());
         article.setCategoryId(req.getCategoryId());
-        article.setDeleted(0L);
+        article.setDeleted((short) 0);
         article.setContent(req.getContent());
         return article;
     }

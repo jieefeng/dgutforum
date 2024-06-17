@@ -74,6 +74,11 @@ public class CommentController {
 //        return commentService.getCommentsByArticleId(articleId);
 //    }
 
+    /**
+     * 根据文章id查询评价
+     * @param commentListReq
+     * @return
+     */
     @PostMapping(path = "list")
     public ResVo<List<CommentDto>> list(CommentListReq commentListReq){
       return commentService.list(commentListReq);

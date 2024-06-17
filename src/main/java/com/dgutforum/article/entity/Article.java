@@ -3,6 +3,7 @@ package com.dgutforum.article.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.dgutforum.common.dto.BaseDO;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,11 +15,7 @@ import java.time.LocalDateTime;
  * DTO 定义返回给web前端的实体类 (VO)
  */
 @Data
-public class Article implements Serializable {
-    private static final long serialVersionUID = -793906904770296838L;
-
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+public class Article extends BaseDO {
 
     /**
      * 作者uid
@@ -43,17 +40,7 @@ public class Article implements Serializable {
     /**
      * 是否删除
      */
-    private Long deleted;
-
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createTime;
-
-    /**
-     * 最后更新时间
-     */
-    private LocalDateTime UpdateTime;
+    private short deleted;
 
     /**
      * 分类

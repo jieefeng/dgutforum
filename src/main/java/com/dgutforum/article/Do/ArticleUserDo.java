@@ -1,19 +1,10 @@
 package com.dgutforum.article.Do;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.dgutforum.common.dto.BaseDO;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-/**
- * 文章表
-
- */
 @Data
-@EqualsAndHashCode(callSuper = true)
-@TableName("article")
-public class ArticleDO extends BaseDO {
-    private static final long serialVersionUID = 1L;
+public class ArticleUserDo extends BaseDO {
 
     /**
      * 作者
@@ -38,10 +29,26 @@ public class ArticleDO extends BaseDO {
     /**
      * 帖子正文
      */
-    private String context;
+    private String content;
 
     /**
-     * 是否删除
+     * 点赞数
      */
-    private Integer deleted;
+    private Long praise;
+
+    /**
+     * 评论数
+     */
+    private Long commentNumber;
+
+    /**
+     * 用户名
+     */
+    private String userName;
+
+    /**
+     * 用户头像
+     */
+    private String photo;
+
 }
