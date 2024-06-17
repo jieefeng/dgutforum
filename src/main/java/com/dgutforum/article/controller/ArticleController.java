@@ -4,6 +4,7 @@ import com.dgutforum.article.entity.Article;
 import com.dgutforum.common.result.ResVo;
 import com.dgutforum.article.service.ArticleWriteService;
 import com.dgutforum.article.vo.ArticlePostReq;
+import com.dgutforum.common.result.eunms.StatusEnum;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -33,9 +34,65 @@ public class ArticleController {
         return ResVo.ok(id);
     }
 
-    // TODO 未完成
+    /**
+     * 根据文章id查询文章
+     * @param articleId
+     * @return
+     */
     @GetMapping(path = "{articleId}")
     public ResVo<Article> getArticleByArticleId(@PathVariable Long articleId){
-        return null;
+        return ResVo.ok(articleWriteService.getById(articleId));
+    }
+
+    /**
+     * 根据文章id更新文章或者删除
+     * @param article
+     * @return
+     */
+    @PostMapping(path = "update")
+    public ResVo<Long> deleteArticleByArticleId(@RequestBody Article article){
+        boolean success = articleWriteService.updateById(article);
+        if(success){
+            return ResVo.ok(1L);
+        } else {
+            return ResVo.fail(StatusEnum.ILLEGAL_ARGUMENTS_MIXED);
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

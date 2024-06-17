@@ -24,9 +24,11 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
     @Override
     public ResVo<List<CommentDto>> list(CommentListReq commentListReq) {
-
-        //1.根据文章id查询评价 每次查询十个
-        List<CommentDto> list = listTen(commentListReq);
+//        分页查询
+//        //1.根据文章id查询评价 每次查询十个
+//        List<CommentDto> list = listTen(commentListReq);
+        //1.根据文章id查询评价 查询全部
+        List<CommentDto> list = commentUserInfoMapper.queryCommentByArticleId(commentListReq.getArticleId());
         //2.根据文章id和父评论id查询所有子评论   并且根据更新时间排序
         for(CommentDto commentDto : list){
             commentDto.setChildren(commentUserInfoMapper.queryChildrenComment(commentDto.getArticleId(),commentDto.getId()));

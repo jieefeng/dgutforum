@@ -18,7 +18,7 @@ public class CommentDto {
     private Long userId;
     private Long parise;
     private String userName;
-    private String phone;
+    private String photo;
 
     private List<CommentVo> children;
 }
