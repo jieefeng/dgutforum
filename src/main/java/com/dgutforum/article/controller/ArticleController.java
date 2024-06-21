@@ -1,9 +1,6 @@
 package com.dgutforum.article.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.dgutforum.article.Do.ArticleUserDo;
-import com.dgutforum.article.dto.ArticleUserDto;
 import com.dgutforum.article.entity.Article;
 import com.dgutforum.common.result.ResVo;
 import com.dgutforum.article.service.ArticleWriteService;
@@ -16,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-
-import static com.dgutforum.common.result.eunms.StatusEnum.ARTICLE_NOT_EXISTS;
 
 @RestController
 @Slf4j

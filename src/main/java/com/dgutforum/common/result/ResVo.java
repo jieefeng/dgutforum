@@ -9,10 +9,10 @@ import java.io.Serializable;
 @Data
 public class ResVo<T> implements Serializable {
     private static final long serialVersionUID = -510306209659393854L;
-//    @ApiModelProperty(value = "返回结果说明", required = true)
+    //    @ApiModelProperty(value = "返回结果说明", required = true)
     private Status status;
 
-//    @ApiModelProperty(value = "返回的实体结果", required = true)
+    //    @ApiModelProperty(value = "返回的实体结果", required = true)
     private T result;
 
 
