@@ -37,7 +37,5 @@ public class ResVo<T> implements Serializable {
         return new ResVo<>(Status.newStatus(status, args));
     }
 
-    public static <T> ResVo<T> fail(Status status) {
-        return new ResVo<>(status);
-    }
+    public static <T> ResVo<T> fail(Status status) {return new ResVo<>(status);}
 }

@@ -1,10 +1,10 @@
-package com.dgutforum.article.Do;
+package com.dgutforum.article.vo;
 
 import com.dgutforum.common.dto.BaseDO;
 import lombok.Data;
 
 @Data
-public class ArticleUserDo extends BaseDO {
+public class ArticleUserVo extends BaseDO {
 
     /**
      * 作者

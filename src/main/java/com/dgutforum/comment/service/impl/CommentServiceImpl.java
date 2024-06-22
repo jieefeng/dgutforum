@@ -1,7 +1,9 @@
 package com.dgutforum.comment.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.dgutforum.comment.DTO.CommentDto;
+import com.dgutforum.comment.dto.CommentDto;
+import com.dgutforum.comment.vo.CommentVo;
 import com.dgutforum.mapper.CommentUserInfoMapper;
 import com.dgutforum.comment.req.CommentListReq;
 import com.dgutforum.common.result.ResVo;
@@ -13,6 +15,7 @@ import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -23,17 +26,20 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
 
     @Override
-    public ResVo<List<CommentDto>> list(CommentListReq commentListReq) {
+    public ResVo<List<CommentVo>> list(CommentListReq commentListReq) {
 //        分页查询
 //        //1.根据文章id查询评价 每次查询十个
 //        List<CommentDto> list = listTen(commentListReq);
-        //1.根据文章id查询评价 查询全部
+        //1.根据文章id查询评价 查询全部 按照评论更新时间排序
         List<CommentDto> list = commentUserInfoMapper.queryCommentByArticleId(commentListReq.getArticleId());
+        List<CommentVo> commentVoList = new ArrayList<>(list.size());
         //2.根据文章id和父评论id查询所有子评论   并且根据更新时间排序
         for(CommentDto commentDto : list){
-            commentDto.setChildren(commentUserInfoMapper.queryChildrenComment(commentDto.getArticleId(),commentDto.getId()));
+            CommentVo commentVo = new CommentVo();
+            BeanUtil.copyProperties(commentDto,commentVo);
+            commentVo.setChildren(commentUserInfoMapper.queryChildrenComment(commentDto.getArticleId(),commentDto.getId()));
         }
-        return ResVo.ok(list);
+        return ResVo.ok(commentVoList);
     }
 
     /**

@@ -1,10 +1,10 @@
 package com.dgutforum.article.controller;
 
-import com.dgutforum.article.Do.ArticleUserDo;
+import com.dgutforum.article.vo.ArticleUserVo;
 import com.dgutforum.article.entity.Article;
 import com.dgutforum.common.result.ResVo;
 import com.dgutforum.article.service.ArticleWriteService;
-import com.dgutforum.article.vo.ArticlePostReq;
+import com.dgutforum.article.req.ArticlePostReq;
 import com.dgutforum.common.result.eunms.StatusEnum;
 import com.dgutforum.mapper.ArticleMapper;
 import jakarta.annotation.Resource;
@@ -26,17 +26,13 @@ public class ArticleController {
     private ArticleMapper articleMapper;
 
     /**
-     * TODO 发布文章，完成后跳转到详情页 这里有一个重定向的知识点
+     * 发布文章，完成后返回文章
      * @return
      */
     @PostMapping(path = "save")
-    public ResVo<ArticleUserDo> post(@RequestBody ArticlePostReq req) throws IOException {
-        ArticleUserDo articleUserDo = articleWriteService.saveArticle(req, 8L/*ReqInfoContext.getReqInfo().getUserId()*/);
-        // 如果使用后端重定向，可以使用下面两种策略
-//        return "redirect:/article/detail/" + id;
-//        response.sendRedirect("/article/detail/" + id);
-        // 这里采用前端重定向策略
-        return ResVo.ok(articleUserDo);
+    public ResVo<ArticleUserVo> post(@RequestBody ArticlePostReq req) throws IOException {
+        ArticleUserVo articleUserVo = articleWriteService.saveArticle(req, 8L/*ReqInfoContext.getReqInfo().getUserId()*/);
+        return ResVo.ok(articleUserVo);
     }
 
     /**
@@ -55,24 +51,24 @@ public class ArticleController {
      * @return
      */
     @GetMapping("/category/{categoryId}")
-    public ResVo<List<ArticleUserDo>> getByCategoryId(@PathVariable Long categoryId){
+    public ResVo<List<ArticleUserVo>> getByCategoryId(@PathVariable Long categoryId){
         return ResVo.ok(articleWriteService.getByCategoryId(categoryId));
     }
 
-    /**
-     * 根据文章id删除文章  1代表删除成功 0代表删除失败
-     * @param articleId
-     * @return
-     */
-    @DeleteMapping("/delete/{articleId}")
-    public ResVo<Long> delete(@PathVariable Long articleId){
-        int result = articleMapper.deleteById(articleId);
-        if (result > 0){
-            return ResVo.ok(1L);
-        } else {
-            return ResVo.ok(0L);
-        }
-    }
+//    /**
+//     * 根据文章id删除文章  1代表删除成功 0代表删除失败
+//     * @param articleId
+//     * @return
+//     */
+//    @DeleteMapping("/delete/{articleId}")
+//    public ResVo<Long> delete(@PathVariable Long articleId){
+//        int result = articleMapper.deleteById(articleId);
+//        if (result > 0){
+//            return ResVo.ok(1L);
+//        } else {
+//            return ResVo.ok(0L);
+//        }
+//    }
 
 
     /**
@@ -89,6 +85,7 @@ public class ArticleController {
             return ResVo.fail(StatusEnum.ILLEGAL_ARGUMENTS_MIXED);
         }
     }
+
 }
 
 

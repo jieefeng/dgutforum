@@ -1,4 +1,4 @@
-package com.dgutforum.article.vo;
+package com.dgutforum.article.req;
 
 
 import lombok.Data;

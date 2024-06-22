@@ -2,10 +2,9 @@ package com.dgutforum.article.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.dgutforum.article.Do.ArticleUserDo;
-import com.dgutforum.article.dto.ArticleUserDto;
+import com.dgutforum.article.vo.ArticleUserVo;
 import com.dgutforum.article.entity.Article;
-import com.dgutforum.article.vo.ArticlePostReq;
+import com.dgutforum.article.req.ArticlePostReq;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ public interface ArticleWriteService extends IService<Article> {
      * @param author 作者
      * @return 返回文章主键
      */
-    ArticleUserDo saveArticle(ArticlePostReq req, Long author);
+    ArticleUserVo saveArticle(ArticlePostReq req, Long author);
 
     /**
      * 删除文章
@@ -33,5 +32,5 @@ public interface ArticleWriteService extends IService<Article> {
      * @param categoryId
      * @return
      */
-    List<ArticleUserDo> getByCategoryId(Long categoryId);
+    List<ArticleUserVo> getByCategoryId(Long categoryId);
 }

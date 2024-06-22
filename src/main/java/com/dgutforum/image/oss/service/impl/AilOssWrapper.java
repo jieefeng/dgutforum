@@ -59,7 +59,7 @@ public class AilOssWrapper implements ImageUploader {
             // 上传文件
             PutObjectResult result = ossClient.putObject(putObjectRequest);
             if (SUCCESS_CODE == result.getResponse().getStatusCode()) {
-                return "https://"+imageConfig.getBucket()+"."+imageConfig.getEndpoint()+"/"+imageConfig.getPrefix()+fileName;
+                return "https://"+imageConfig.getBucket()+"."+imageConfig.getEndpoint()+"/"+fileName;
             } else {
                 log.error("upload to oss error! response:{}", result.getResponse().getStatusCode());
                 return "";

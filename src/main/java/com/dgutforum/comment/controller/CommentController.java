@@ -1,6 +1,6 @@
 package com.dgutforum.comment.controller;
 
-import com.dgutforum.comment.DTO.CommentDto;
+import com.dgutforum.comment.dto.CommentDto;
 import com.dgutforum.comment.req.CommentListReq;
 import com.dgutforum.comment.vo.CommentVo;
 import com.dgutforum.common.result.ResVo;
@@ -80,7 +80,7 @@ public class CommentController {
      * @return
      */
     @PostMapping(path = "list")
-    public ResVo<List<CommentDto>> list(CommentListReq commentListReq){
+    public ResVo<List<CommentVo>> list(CommentListReq commentListReq){
       return commentService.list(commentListReq);
     }
 }

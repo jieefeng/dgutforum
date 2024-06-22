@@ -41,6 +41,11 @@ public class imageController {
 //    }
 
 
+    /**
+     * 保存图片到OSS
+     * @param image
+     * @return
+     */
     @PostMapping("save")
     public ResVo<ImageVo> upload(@RequestBody ImageDTO image) {
         ImageVo imageVo = new ImageVo();

@@ -2,9 +2,8 @@ package com.dgutforum.article.converter;
 
 
 
-import com.dgutforum.article.dto.ArticleUserDto;
 import com.dgutforum.article.entity.Article;
-import com.dgutforum.article.vo.ArticlePostReq;
+import com.dgutforum.article.req.ArticlePostReq;
 
 /**
  * 文章转换
