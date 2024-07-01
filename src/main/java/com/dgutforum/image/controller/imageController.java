@@ -20,33 +20,12 @@ public class imageController {
     @Resource
     private ImageService imageService;
 
-
-//    /**
-//     * 图片上传
-//     *
-//     * @return
-//     */
-//
-//    @RequestMapping(path = "upload")
-//    public ResVo<ImageVo> upload(HttpServletRequest request) {
-//        ImageVo imageVo = new ImageVo();
-//        try {
-//            String imagePath = imageService.saveImg(request);
-//            imageVo.setImagePath(imagePath);
-//        } catch (Exception e) {
-//            log.error("save upload file error!", e);
-//            return ResVo.fail(StatusEnum.UPLOAD_PIC_FAILED);
-//        }
-//        return ResVo.ok(imageVo);
-//    }
-
-
     /**
      * 保存图片到OSS
      * @param image
      * @return
      */
-    @PostMapping("save")
+    @PostMapping("4")
     public ResVo<ImageVo> upload(@RequestBody ImageDTO image) {
         ImageVo imageVo = new ImageVo();
         try {

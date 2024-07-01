@@ -31,6 +31,7 @@ public class ArticleController {
      */
     @PostMapping(path = "save")
     public ResVo<ArticleUserVo> post(@RequestBody ArticlePostReq req) throws IOException {
+        log.info("发布文章:{}",req);
         ArticleUserVo articleUserVo = articleWriteService.saveArticle(req, 8L/*ReqInfoContext.getReqInfo().getUserId()*/);
         return ResVo.ok(articleUserVo);
     }

@@ -22,7 +22,6 @@ public class GlobalFilter implements Filter {
         if (requestURI.equals("/login")) {
             System.out.println("Login request received at: " + System.currentTimeMillis());
         }
-
     }
 }
 
