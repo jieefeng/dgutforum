@@ -14,17 +14,17 @@ public abstract interface CommentUserInfoMapper extends BaseMapper<com.dgutforum
 
 
     @Select("select c.id, c.article_id, c.user_id, c.content, c.top_comment_id, c.parent_comment_id, c.praise, c.create_time, c.update_time," +
-            "ui.user_name,ui.photo " +
+            "ui.username,ui.photo " +
             "from comment c " +
-            "left join dgutforum.user_info ui on c.user_id = ui.user_id " +
+            "left join user ui on c.user_id = ui.id " +
             "where c.article_id = #{articleId} and c.deleted = 0 " +
             "order by c.update_time")
     Page<com.dgutforum.comment.dto.CommentDto> list (Long articleId);
 
     @Select("select c.id, c.article_id, c.user_id, c.content, c.top_comment_id, c.parent_comment_id, c.praise, c.create_time, c.update_time," +
-            "ui.user_name,ui.photo " +
+            "ui.username,ui.photo " +
             "from comment c " +
-            "left join dgutforum.user_info ui on c.user_id = ui.user_id " +
+            "left join user ui on c.user_id = ui.id " +
             "where c.article_id = #{articleId} and c.deleted = 0 and c.parent_comment_id = #{parentCommentId} " +
             "order by c.update_time")
     List<CommentDto> queryChildrenComment(Long articleId, Long parentCommentId);
@@ -36,9 +36,9 @@ public abstract interface CommentUserInfoMapper extends BaseMapper<com.dgutforum
      * @return
      */
     @Select("select c.id, c.article_id, c.user_id, c.content, c.top_comment_id, c.parent_comment_id, c.praise, c.create_time, c.update_time," +
-            "ui.user_name,ui.photo " +
+            "ui.username,ui.photo " +
             "from comment c " +
-            "left join dgutforum.user_info ui on c.user_id = ui.user_id " +
+            "left join user ui on c.user_id = ui.id " +
             "where c.article_id = #{articleId} and c.deleted = 0 and c.top_comment_id = c.id " +
             "order by c.update_time")
     List<com.dgutforum.comment.dto.CommentDto> queryCommentByArticleId(Long articleId);

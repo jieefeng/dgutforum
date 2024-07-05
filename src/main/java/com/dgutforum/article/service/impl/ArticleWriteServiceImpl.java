@@ -12,7 +12,7 @@ import com.dgutforum.image.service.ImageService;
 import com.dgutforum.mapper.ArticleMapper;
 import com.dgutforum.article.service.ArticleWriteService;
 import com.dgutforum.article.req.ArticlePostReq;
-import com.dgutforum.mapper.ArticleUserInfroMapper;
+import com.dgutforum.mapper.ArticleUserMapper;
 import com.dgutforum.mapper.CommentMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,7 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
     private ImageService imageService;
 
     @Resource
-    private ArticleUserInfroMapper articleUserInfroMapper;
+    private ArticleUserMapper articleUserMapper;
 
     @Resource
     private CommentMapper commentMapper;
@@ -52,7 +52,12 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
      */
    public List<ArticleUserVo> getByCategoryId(Long categoryId) {
        log.info("根据分类id查询文章:{}",categoryId);
-       List<ArticleUserVo> articleUserVos = articleUserInfroMapper.queryArticleUserInfoByCategoryId(categoryId);
+       //1.如果分类id为0  全表查询
+       if(categoryId == 0){
+           List<ArticleUserVo> articleUserVos = articleUserMapper.queryArticleUserInfoAll();
+           return articleUserVos;
+       }
+       List<ArticleUserVo> articleUserVos = articleUserMapper.queryArticleUserInfoByCategoryId(categoryId);
        for (ArticleUserVo articleUserVo : articleUserVos){
            QueryWrapper queryWrapper = new QueryWrapper<>();
            queryWrapper.eq("article_id", articleUserVo.getId());
@@ -103,7 +108,7 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
      * @return
      */
     private ArticleUserVo queryArticleUserInfo(Long id, Long userId) {
-        ArticleUserVo articleUserVo = articleUserInfroMapper.queryArticleUserInfo(id,userId);
+        ArticleUserVo articleUserVo = articleUserMapper.queryArticleUserInfo(id,userId);
         return articleUserVo;
     }
 
