@@ -20,13 +20,14 @@ public class loginFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         String url = request.getRequestURL().toString();
         log.info("请求的url：{}",url);
 
-        if(url.contains("login") || url.contains("register")){
+        if(url.contains("login") || url.contains("register") || url.contains("doc") || url.contains("webjars") || url.contains("swagger")){
             log.info("登录，放行");
             filterChain.doFilter(request, response);
             return;

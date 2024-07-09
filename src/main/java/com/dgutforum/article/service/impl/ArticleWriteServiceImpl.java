@@ -50,10 +50,10 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
      * @param categoryId
      * @return
      */
-   public List<ArticleUserVo> getByCategoryId(Long categoryId) {
+   public List<ArticleUserVo>  getByCategoryId(Long categoryId) {
        log.info("根据分类id查询文章:{}",categoryId);
-       //1.如果分类id为0  全表查询
-       if(categoryId == 0){
+       //1.如果分类id为12  全表查询
+       if(categoryId == 12){
            List<ArticleUserVo> articleUserVos = articleUserMapper.queryArticleUserInfoAll();
            return articleUserVos;
        }

@@ -5,6 +5,9 @@ import com.dgutforum.common.result.Result;
 import com.dgutforum.common.util.JwtUtils;
 import com.dgutforum.user.pojo.User;
 import com.dgutforum.user.service.UserService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,12 +19,14 @@ import java.util.Map;
 
 @Slf4j
 @RestController
+@Tag(name = "登录相关接口")
 public class LoginController {
 
     @Autowired
     private UserService userService;
 
     @PostMapping("/login")
+    @Operation(summary = "登录")
     public ResVo<String> login(@RequestBody User user){
         log.info("输入的账号和密码：{}",user);
 

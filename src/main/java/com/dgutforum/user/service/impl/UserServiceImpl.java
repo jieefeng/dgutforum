@@ -64,7 +64,6 @@ public class UserServiceImpl implements UserService {
         userMapper.follow_del(follow);
     }
 
-    @Override
     public User get(User user) {
         User e = userMapper.get(user);
 

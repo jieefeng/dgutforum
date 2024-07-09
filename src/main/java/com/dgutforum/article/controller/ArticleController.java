@@ -7,6 +7,9 @@ import com.dgutforum.article.service.ArticleWriteService;
 import com.dgutforum.article.req.ArticlePostReq;
 import com.dgutforum.common.result.eunms.StatusEnum;
 import com.dgutforum.mapper.ArticleMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +20,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/article")
+@Tag(name = "文章相关接口")
 public class ArticleController {
 
     @Resource
@@ -30,6 +34,7 @@ public class ArticleController {
      * @return
      */
     @PostMapping(path = "save")
+    @Operation(summary = "发布文章，完成后返回文章")
     public ResVo<ArticleUserVo> post(@RequestBody ArticlePostReq req) throws IOException {
         log.info("发布文章:{}",req);
         ArticleUserVo articleUserVo = articleWriteService.saveArticle(req, 8L/*ReqInfoContext.getReqInfo().getUserId()*/);
@@ -42,6 +47,7 @@ public class ArticleController {
      * @return
      */
     @GetMapping(path = "{articleId}")
+    @Operation(summary = "根据文章id查询文章")
     public ResVo<Article> getArticleByArticleId(@PathVariable Long articleId){
         return ResVo.ok(articleWriteService.getById(articleId));
     }
@@ -52,6 +58,7 @@ public class ArticleController {
      * @return
      */
     @GetMapping("/category/{categoryId}")
+    @Operation(summary = "根据分类id查询文章")
     public ResVo<List<ArticleUserVo>> getByCategoryId(@PathVariable Long categoryId){
         return ResVo.ok(articleWriteService.getByCategoryId(categoryId));
     }
@@ -78,6 +85,7 @@ public class ArticleController {
      * @return
      */
     @PostMapping(path = "update")
+    @Operation(summary = "根据文章id更新文章或者删除")
     public ResVo<Long> deleteArticleByArticleId(@RequestBody Article article){
         boolean success = articleWriteService.updateById(article);
         if(success){
