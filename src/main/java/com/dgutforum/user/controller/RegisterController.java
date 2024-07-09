@@ -25,7 +25,12 @@ public class RegisterController {
     public Result register(@RequestBody User user) {
         log.info("register infomation: {}", user);
 
-        userService.register(user);
+
+        try {
+            userService.register(user);
+        } catch (Exception e) {
+            return Result.error("用户名重复");
+        }
 
         return Result.success();
     }

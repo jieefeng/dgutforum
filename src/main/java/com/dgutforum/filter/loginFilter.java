@@ -26,7 +26,7 @@ public class loginFilter implements Filter {
         String url = request.getRequestURL().toString();
         log.info("请求的url：{}",url);
 
-        if(url.contains("login")){
+        if(url.contains("login") || url.contains("register")){
             log.info("登录，放行");
             filterChain.doFilter(request, response);
             return;
