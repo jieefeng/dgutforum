@@ -2,11 +2,8 @@ package com.dgutforum.user.controller;
 
 import com.dgutforum.common.result.ResVo;
 import com.dgutforum.common.result.Result;
-import com.dgutforum.common.result.eunms.StatusEnum;
 import com.dgutforum.user.pojo.User;
 import com.dgutforum.user.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,20 +16,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
-@Tag(name = "注册相关接口")
 public class RegisterController {
 
     @Autowired
     private UserService userService;
 
-    @Operation(summary = "注册")
-    @PostMapping("/get")
-    public Result get(@RequestBody User user){
-        log.info("要get的id:{}", user.getId());
+    @PostMapping("/register")
+    public Result register(@RequestBody User user) {
+        log.info("register infomation: {}", user);
 
-        User e = userService.get(user);
 
-        return Result.success(e);
+        try {
+            userService.register(user);
+        } catch (Exception e) {
+            return Result.error("用户名重复");
+        }
 
+        return Result.success();
     }
+
 }
