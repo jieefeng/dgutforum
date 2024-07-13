@@ -16,10 +16,7 @@ public class CommentConverter {
         Comment comment = new Comment();
         // 设置作者ID
         comment.setUserId(userId);
-        comment.setId(req.getArticleId());
         comment.setArticleId(req.getArticleId());
-        comment.setParentCommentId(req.getParentCommentId());
-        comment.setTopCommentId(req.getTopCommentId());
         comment.setCreateTime(LocalDateTime.now());
         comment.setUpdateTime(LocalDateTime.now());
         comment.setDeleted((short) 0);

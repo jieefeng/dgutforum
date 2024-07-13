@@ -1,5 +1,7 @@
 package com.dgutforum.article.controller;
 
+import com.dgutforum.article.req.ArticleGetReq;
+import com.dgutforum.article.req.ArticleUserIdReq;
 import com.dgutforum.article.vo.ArticleUserVo;
 import com.dgutforum.article.entity.Article;
 import com.dgutforum.common.result.ResVo;
@@ -37,7 +39,7 @@ public class ArticleController {
     @Operation(summary = "发布文章，完成后返回文章")
     public ResVo<ArticleUserVo> post(@RequestBody ArticlePostReq req) throws IOException {
         log.info("发布文章:{}",req);
-        ArticleUserVo articleUserVo = articleWriteService.saveArticle(req, 8L/*ReqInfoContext.getReqInfo().getUserId()*/);
+        ArticleUserVo articleUserVo = articleWriteService.saveArticle(req, req.getUserId());
         return ResVo.ok(articleUserVo);
     }
 
@@ -48,8 +50,8 @@ public class ArticleController {
      */
     @GetMapping(path = "{articleId}")
     @Operation(summary = "根据文章id查询文章")
-    public ResVo<Article> getArticleByArticleId(@PathVariable Long articleId){
-        return ResVo.ok(articleWriteService.getById(articleId));
+    public ResVo<ArticleUserVo> getArticleByArticleId(@PathVariable Long articleId){
+        return ResVo.ok(articleWriteService.getArticleUserVoById(articleId));
     }
 
     /**
@@ -95,6 +97,41 @@ public class ArticleController {
         }
     }
 
+    /**
+     * 根据用户id查询文章
+     * @param articleUserIdReq
+     * @return
+     */
+    @PostMapping("get")
+    @Operation(summary = "根据用户id查询文章")
+    public ResVo<List<ArticleUserVo>> getArticleUserByArticleId(@RequestBody ArticleUserIdReq articleUserIdReq){
+        ArticleGetReq articleGetReq = new ArticleGetReq();
+        articleGetReq.setUserId(articleUserIdReq.getUserId());
+        return ResVo.ok(articleWriteService.getArticleUserByArticleId(articleGetReq));
+    }
+
+    /**
+     * 根据用户id查询点赞列表
+     * @param articleGetReq
+     * @return
+     */
+    @PostMapping("getPraise")
+    @Operation(summary = "根据用户id查询点赞列表")
+    public ResVo<List<ArticleUserVo>> getArticleUserPraiseByUserId(@RequestBody ArticleGetReq articleGetReq){
+        return ResVo.ok(articleWriteService.getArticleUserPraiseByUserId(articleGetReq));
+    }
+
+    /**
+     * 用户点赞
+     * @param articleGetReq
+     * @return
+     */
+    @PostMapping("praise")
+    @Operation(summary = "用户点赞")
+    public ResVo praise(@RequestBody ArticleGetReq articleGetReq){
+        articleWriteService.praise(articleGetReq);
+        return ResVo.ok(null);
+    }
 }
 
 

@@ -98,6 +98,23 @@ CREATE TABLE `comment` (
                            KEY `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='评论表';
 
+CREATE TABLE `article_praise` (
+                                  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+                                  `user_id` BIGINT UNSIGNED NOT NULL COMMENT '用户id',
+                                  `article_id` BIGINT NOT NULL COMMENT '文章ID',
+                                  PRIMARY KEY (`id`),
+                                  UNIQUE KEY `uk_user_article` (`user_id`, `article_id`)
+) COMMENT '用户点赞表';
+
+CREATE TABLE `article_collection` (
+                                      `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+                                      `user_id` BIGINT UNSIGNED NOT NULL COMMENT '用户id',
+                                      `article_id` BIGINT NOT NULL COMMENT '文章ID',
+                                      PRIMARY KEY (`id`),
+                                      UNIQUE KEY `unique_user_article` (`user_id`, `article_id`)
+) COMMENT '用户收藏表';
+
+
 
 
 

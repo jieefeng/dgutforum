@@ -11,9 +11,7 @@ public class CommentDto extends BaseDO {
     private Long articleId;
     private Long userId;
     private String content;
-    private Long topCommentId;
-    private Long parentCommentId;
-    private Long parise;
-    private String userName;
+    private Long praise;
+    private String username;
     private String phone;
 }

@@ -1,5 +1,6 @@
 package com.dgutforum.user.controller;
 
+import com.dgutforum.common.result.ResVo;
 import com.dgutforum.common.result.Result;
 import com.dgutforum.common.util.JwtUtils;
 import com.dgutforum.user.pojo.User;
@@ -21,7 +22,7 @@ public class LoginController {
     private UserService userService;
 
     @PostMapping("/login")
-    public Result login(@RequestBody User user){
+    public ResVo login(@RequestBody User user){
         log.info("输入的账号和密码：{}",user);
 
         User e = userService.login(user);
@@ -32,8 +33,8 @@ public class LoginController {
             claims.put("username",e.getUsername());
 
             String jwt = JwtUtils.generateJwt(claims);
-            return Result.success(jwt);
+            return ResVo.ok(jwt);
         }
-        else return Result.error("用户或密码错误");
+        else return ResVo.ok("用户或密码错误");
     }
 }

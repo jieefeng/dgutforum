@@ -39,3 +39,17 @@ public class ResVo<T> implements Serializable {
 
     public static <T> ResVo<T> fail(Status status) {return new ResVo<>(status);}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Follow {
 
-    private int id;
-    private int userId;
-    private int followUserId;
+    private Long id;
+    private Long userId;
+    private Long followUserId;
     private LocalDateTime createTime; //创建时间
     private LocalDateTime updateTime;
 }

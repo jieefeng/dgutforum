@@ -6,7 +6,12 @@ import lombok.Data;
  * 评论列表入参
  */
 @Data
-public class CommentSaveReq {
+public class CommentUpdateReq {
+
+    /**
+     * 评论ID
+     */
+    private Long commentId;
 
     /**
      * 文章ID

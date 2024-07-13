@@ -2,6 +2,7 @@ package com.dgutforum.article.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dgutforum.article.req.ArticleGetReq;
 import com.dgutforum.article.vo.ArticleUserVo;
 import com.dgutforum.article.entity.Article;
 import com.dgutforum.article.req.ArticlePostReq;
@@ -33,4 +34,31 @@ public interface ArticleWriteService extends IService<Article> {
      * @return
      */
     List<ArticleUserVo> getByCategoryId(Long categoryId);
+
+    /**
+     * 根据文章id查询文章
+     * @param articleId
+     * @return
+     */
+    ArticleUserVo getArticleUserVoById(Long articleId);
+
+    /**
+     * 根据用户id查询文章
+     * @param articleGetReq
+     * @return
+     */
+    List<ArticleUserVo> getArticleUserByArticleId(ArticleGetReq articleGetReq);
+
+    /**
+     * 根据用户id查询点赞列表
+     * @param articleGetReq
+     * @return
+     */
+    List<ArticleUserVo> getArticleUserPraiseByUserId(ArticleGetReq articleGetReq);
+
+    /**
+     * 用户点赞
+     * @param articleGetReq
+     */
+    void praise(ArticleGetReq articleGetReq);
 }

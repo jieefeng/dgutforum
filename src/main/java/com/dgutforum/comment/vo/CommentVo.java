@@ -13,13 +13,9 @@ public class CommentVo extends BaseDO {
     private Long articleId;
     private String content;
 
-    private Long topCommentId;
-    private Long parentCommentId;
-
     private Long userId;
-    private Long parise;
-    private String userName;
+    private Long praise;
+    private String username;
     private String photo;
 
-    private List<CommentDto> children;
 }

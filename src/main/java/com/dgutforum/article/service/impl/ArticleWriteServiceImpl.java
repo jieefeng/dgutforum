@@ -3,6 +3,7 @@ package com.dgutforum.article.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dgutforum.article.req.ArticleGetReq;
 import com.dgutforum.article.vo.ArticleUserVo;
 import com.dgutforum.common.util.NumUtil;
 import com.dgutforum.article.converter.ArticleConverter;
@@ -12,6 +13,7 @@ import com.dgutforum.image.service.ImageService;
 import com.dgutforum.mapper.ArticleMapper;
 import com.dgutforum.article.service.ArticleWriteService;
 import com.dgutforum.article.req.ArticlePostReq;
+import com.dgutforum.mapper.ArticlePraiseMapper;
 import com.dgutforum.mapper.ArticleUserMapper;
 import com.dgutforum.mapper.CommentMapper;
 import jakarta.annotation.Resource;
@@ -24,6 +26,8 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
+import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -45,6 +49,9 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
     @Resource
     private CommentMapper commentMapper;
 
+    @Resource
+    private ArticlePraiseMapper articlePraiseMapper;
+
     /**
      * 根据分类id查询文章
      * @param categoryId
@@ -52,12 +59,14 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
      */
    public List<ArticleUserVo>  getByCategoryId(Long categoryId) {
        log.info("根据分类id查询文章:{}",categoryId);
+       List<ArticleUserVo> articleUserVos = null;
        //1.如果分类id为12  全表查询
        if(categoryId == 12){
-           List<ArticleUserVo> articleUserVos = articleUserMapper.queryArticleUserInfoAll();
-           return articleUserVos;
+           articleUserVos = articleUserMapper.queryArticleUserInfoAll();
+       } else {
+            articleUserVos = articleUserMapper.queryArticleUserInfoByCategoryId(categoryId);
        }
-       List<ArticleUserVo> articleUserVos = articleUserMapper.queryArticleUserInfoByCategoryId(categoryId);
+       //2.查询评论数
        for (ArticleUserVo articleUserVo : articleUserVos){
            QueryWrapper queryWrapper = new QueryWrapper<>();
            queryWrapper.eq("article_id", articleUserVo.getId());
@@ -65,6 +74,64 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
        }
        return articleUserVos;
    }
+
+    /**
+     * 根据文章id查询文章
+     * @param articleId
+     * @return
+     */
+    @Override
+    public ArticleUserVo getArticleUserVoById(Long articleId) {
+        log.info("根据文章id查询文章:{}",articleId);
+        //1.根据文章id查询文章
+        ArticleUserVo articleUserVo = articleUserMapper.queryOneArticleUserInfoByarticleId(articleId);
+        //2.查询文章评论数
+        QueryWrapper queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("article_id", articleUserVo.getId());
+        articleUserVo.setCommentNumber(commentMapper.selectCount(queryWrapper));
+        return articleUserVo;
+    }
+
+    /**
+     * 根据用户id查询文章
+     * @param articleGetReq
+     * @return
+     */
+    @Override
+    public List<ArticleUserVo> getArticleUserByArticleId(ArticleGetReq articleGetReq) {
+        List<ArticleUserVo> articleUserByArticleId = articleUserMapper.getArticleUserByArticleId(articleGetReq.getUserId());
+        log.info("根据用户id查询文章:{}",articleUserByArticleId);
+        return articleUserByArticleId;
+    }
+
+    /**
+     * 根据用户id查询点赞列表
+     * @param articleGetReq
+     * @return
+     */
+    @Override
+    public List<ArticleUserVo> getArticleUserPraiseByUserId(ArticleGetReq articleGetReq) {
+        //1.根据用户id查询用户点赞过的文章id列表
+        ArrayList<Long> praiseList = articlePraiseMapper.getArticleIdByuserId(articleGetReq.getUserId());
+        //2.查询文章列表
+        List<ArticleUserVo> articleUserVos = new ArrayList<>(praiseList.size());
+        for (Long articleId : praiseList){
+            articleUserVos.add(articleUserMapper.queryOneArticleUserInfoByarticleId(articleId));
+        }
+        return articleUserVos;
+    }
+
+    /**
+     * 用户点赞
+     * @param articleGetReq
+     */
+    @Override
+    public void praise(ArticleGetReq articleGetReq) {
+        //1.文章表点赞数+1
+        articleMapper.praise(articleGetReq.getArticleId());
+        //2.article_praise增加关系
+        articlePraiseMapper.save(articleGetReq.getArticleId(),articleGetReq.getUserId());
+    }
 
     /**
      * 保存或更新文章

@@ -22,17 +22,17 @@ public class RegisterController {
     private UserService userService;
 
     @PostMapping("/register")
-    public Result register(@RequestBody User user) {
+    public ResVo register(@RequestBody User user) {
         log.info("register infomation: {}", user);
 
 
         try {
             userService.register(user);
         } catch (Exception e) {
-            return Result.error("用户名重复");
+            return ResVo.ok("用户名重复");
         }
 
-        return Result.success();
+        return ResVo.ok(null);
     }
 
 }

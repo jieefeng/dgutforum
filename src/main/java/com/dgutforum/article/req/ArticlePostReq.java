@@ -9,6 +9,9 @@ import java.io.Serializable;
  */
 @Data
 public class ArticlePostReq implements Serializable {
+
+    private Long userId;
+
     /**
      * 帖子ID， 当存在时，表示更新文章
      */

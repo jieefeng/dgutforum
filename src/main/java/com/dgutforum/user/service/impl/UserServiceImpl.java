@@ -75,6 +75,10 @@ public class UserServiceImpl implements UserService {
 
         List<Integer> list = userMapper.follow_select(follow);
 
+        if(list.size() == 0){
+            return null;
+        }
+
         List<UserVo> e = userMapper.id_select(list);
 
         return e;
