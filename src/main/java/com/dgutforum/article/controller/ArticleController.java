@@ -121,9 +121,14 @@ public class ArticleController {
         return ResVo.ok(articleWriteService.getArticleUserByArticleId(articleGetReq));
     }
 
+    /**
+     * 根据用户id查询用户收藏的文章
+     * @return
+     */
+    @GetMapping("/getArticleUserCollection}")
     public ResVo<List<ArticleUserVo>> getArticleUserCollectionByUserId(){
-
-        return null;
+        List<ArticleUserVo> articleUserVoList = articleWriteService.getArticleUserCollectionByUserId();
+        return ResVo.ok(articleUserVoList);
     }
 
     /**

@@ -68,4 +68,10 @@ public interface ArticleWriteService extends IService<Article> {
      */
     List<ArticleUserVo> selectAll();
 
+    /**
+     * 查询用户收藏的文章
+     * @return
+     */
+    List<ArticleUserVo> getArticleUserCollectionByUserId();
+
 }

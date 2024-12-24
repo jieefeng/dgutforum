@@ -41,6 +41,7 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
     private final CommentMapper commentMapper;
     private final ArticlePraiseMapper articlePraiseMapper;
     private final UserInfoMapper userInfoMapper;
+    private final ActivityCollectionMapper activityCollectionMapper;
 
     /**
      * 根据分类id查询文章
@@ -84,7 +85,7 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
         articleUserVo.setPraise(praiseNumber);
         //4.增加用户阅读文章数
         userInfoMapper.incrementReadCountByuserId(ThreadLocalContext.getUserId());
-        //5.增加活跃度 阅读+1
+        //TODO 5.增加活跃度 阅读+1
         return articleUserVo;
     }
 
@@ -145,6 +146,20 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
             else{
                 articleUserVo.setCommentNumber(0L);
             }
+        }
+        return articleUserVoList;
+    }
+
+    @Override
+    public List<ArticleUserVo> getArticleUserCollectionByUserId() {
+        //1.根据用户id查询用户收藏的文章的Id
+        Long userId = ThreadLocalContext.getUserId();
+        List<Long> articleIdList = activityCollectionMapper.getArticleUserCollectionByUserId(userId);
+        //2.根据文章id查询出文章
+        List<ArticleUserVo> articleUserVoList = new ArrayList<>();
+        for (Long articleId : articleIdList){
+            ArticleUserVo articleUserVoById = getArticleUserVoById(articleId);
+            articleUserVoList.add(articleUserVoById);
         }
         return articleUserVoList;
     }
