@@ -16,4 +16,9 @@ public interface ArticlePraiseMapper {
 
     @Insert("insert into article_praise (user_id, article_id) value (#{userId},#{articleId})")
     void save(Long articleId, Long userId);
+
+    @Select("select * from article_praise " +
+            "where article_id = #{articleId}")
+    Long getArticlePraiseByArticleId(Long articleId);
+
 }

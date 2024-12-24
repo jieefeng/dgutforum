@@ -115,6 +115,19 @@ CREATE TABLE `article_collection` (
 ) COMMENT '用户收藏表';
 
 
+create table comment_praise
+(
+    id          bigint unsigned auto_increment comment '主键ID'
+        primary key,
+    user_id     bigint unsigned                     not null comment '用户id',
+    comment_id  bigint                              not null comment '文章ID',
+    create_time timestamp default CURRENT_TIMESTAMP null,
+    update_time timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
+    constraint uk_user_article
+        unique (user_id, comment_id)
+)
+    comment '评论点赞表';
+
 
 
 

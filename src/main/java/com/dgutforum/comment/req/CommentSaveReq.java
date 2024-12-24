@@ -23,4 +23,9 @@ public class CommentSaveReq {
      */
     private String commentContent;
 
+    /**
+     * 一级评论id
+     */
+    private Long topCommentId;
+
 }

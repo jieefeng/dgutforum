@@ -4,6 +4,8 @@ package com.dgutforum.filter;
 import com.alibaba.fastjson.JSONObject;
 import com.dgutforum.common.result.Result;
 import com.dgutforum.common.util.JwtUtils;
+import com.dgutforum.context.ThreadLocalContext;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,7 +47,10 @@ public class loginFilter implements Filter {
         }
 
         try {
-            JwtUtils.parseJWT(jwt);
+            Claims claims = JwtUtils.parseJWT(jwt);
+            Long userId = claims.get("id", Long.class);
+            //1.存入用户id
+            ThreadLocalContext.setUserId(userId);
         } catch (Exception e) {
             e.printStackTrace();
             log.info("令牌解析失败");

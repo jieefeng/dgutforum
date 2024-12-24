@@ -1,25 +1,54 @@
 package com.dgutforum.config;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
-@Data
-@ConfigurationProperties(prefix = "spring.rabbitmq")
-@Component
+@Configuration
 public class RabbitmqConfig {
 
-    private String host;
+    public static final String ACTIVITY_DIRECT = "dgutforum.activity";
 
-    private int port;
+    public static final String PRAISE_QUEUE = "dgutforum.activity.praise";
 
-    private String username;
+    public static final String PRAISE_BINGING = "praise";
 
-    private String password;
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+        return new RabbitTemplate(connectionFactory);
+    }
 
-    private String virtualHost;
+    /**
+     * activity交换机
+     * @return
+     */
+    @Bean
+    public DirectExchange activityExchange(){
+        return new DirectExchange(ACTIVITY_DIRECT);
+    }
 
-    private int poolSize;
+    /**
+     * praise队列
+     * @return
+     */
+    @Bean
+    public Queue activityQueue(){
+        return new Queue(PRAISE_QUEUE);
+    }
 
+    /**
+     * 绑定点赞的路由键
+     * @param activityQueue
+     * @param activityExchange
+     * @return
+     */
+    @Bean
+    public Binding bindingPraise(Queue activityQueue,DirectExchange activityExchange){
+        return BindingBuilder.bind(activityQueue).to(activityExchange).with(PRAISE_BINGING);
+    }
 }

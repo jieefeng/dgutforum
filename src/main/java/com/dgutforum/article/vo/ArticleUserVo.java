@@ -3,28 +3,17 @@ package com.dgutforum.article.vo;
 import com.dgutforum.common.dto.BaseDO;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class ArticleUserVo extends BaseDO {
 
-    /**
-     * 作者
-     */
-    private Long userId;
+    private Long id;
 
     /**
      * 帖子标题
      */
     private String title;
-
-    /**
-     * 帖子头图
-     */
-    private String picture;
-
-    /**
-     * 类目ID
-     */
-    private Long categoryId;
 
     /**
      * 帖子正文
@@ -42,6 +31,16 @@ public class ArticleUserVo extends BaseDO {
     private Long commentNumber;
 
     /**
+     * 收藏数
+     */
+    private String collection;
+
+    /**
+     * 作者
+     */
+    private Long userId;
+
+    /**
      * 用户名
      */
     private String username;
@@ -50,5 +49,6 @@ public class ArticleUserVo extends BaseDO {
      * 用户头像
      */
     private String photo;
+
 
 }

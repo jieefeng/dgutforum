@@ -9,14 +9,13 @@ import com.dgutforum.common.util.NumUtil;
 import com.dgutforum.article.converter.ArticleConverter;
 
 import com.dgutforum.article.entity.Article;
+import com.dgutforum.context.ThreadLocalContext;
 import com.dgutforum.image.service.ImageService;
-import com.dgutforum.mapper.ArticleMapper;
+import com.dgutforum.mapper.*;
 import com.dgutforum.article.service.ArticleWriteService;
 import com.dgutforum.article.req.ArticlePostReq;
-import com.dgutforum.mapper.ArticlePraiseMapper;
-import com.dgutforum.mapper.ArticleUserMapper;
-import com.dgutforum.mapper.CommentMapper;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,25 +31,16 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> implements ArticleWriteService {
 
-    @Autowired
-    private TransactionTemplate transactionTemplate;
-
-    @Autowired
-    private ArticleMapper articleMapper;
-
-    @Resource
-    private ImageService imageService;
-
-    @Resource
-    private ArticleUserMapper articleUserMapper;
-
-    @Resource
-    private CommentMapper commentMapper;
-
-    @Resource
-    private ArticlePraiseMapper articlePraiseMapper;
+    private final TransactionTemplate transactionTemplate;
+    private final ArticleMapper articleMapper;
+    private final ImageService imageService;
+    private final ArticleUserMapper articleUserMapper;
+    private final CommentMapper commentMapper;
+    private final ArticlePraiseMapper articlePraiseMapper;
+    private final UserInfoMapper userInfoMapper;
 
     /**
      * 根据分类id查询文章
@@ -89,6 +79,12 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
         QueryWrapper queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("article_id", articleUserVo.getId());
         articleUserVo.setCommentNumber(commentMapper.selectCount(queryWrapper));
+        //3.查询文章点赞数
+        Long praiseNumber = articlePraiseMapper.getArticlePraiseByArticleId(articleId);
+        articleUserVo.setPraise(praiseNumber);
+        //4.增加用户阅读文章数
+        userInfoMapper.incrementReadCountByuserId(ThreadLocalContext.getUserId());
+        //5.增加活跃度 阅读+1
         return articleUserVo;
     }
 
@@ -133,6 +129,26 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
         articlePraiseMapper.save(articleGetReq.getArticleId(),articleGetReq.getUserId());
     }
 
+    @Override
+    public List<ArticleUserVo> selectAll() {
+        log.info("查询全部文章");
+        //1.根据文章id查询文章
+        List<ArticleUserVo> articleUserVoList = articleUserMapper.queryAll();
+        for (ArticleUserVo articleUserVo : articleUserVoList){
+            //2.查询文章评论数
+            QueryWrapper queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("article_id", articleUserVo.getId());
+
+            Long commentNumber = commentMapper.selectCount(queryWrapper);
+            if(commentNumber != null)
+                articleUserVo.setCommentNumber(commentNumber);
+            else{
+                articleUserVo.setCommentNumber(0L);
+            }
+        }
+        return articleUserVoList;
+    }
+
     /**
      * 保存或更新文章
      * @param req    上传的文章体
@@ -152,6 +168,9 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
             public ArticleUserVo doInTransaction(TransactionStatus status) {
                 Long articleId;
                 if (NumUtil.nullOrZero(req.getArticleId())) {
+                    //1.增加发布文章数
+                    userInfoMapper.incrementPraiseCountByuserId(req.getUserId());
+                    //2.保存文章
                     article.setCreateTime(LocalDateTime.now());
                     article.setUpdateTime(LocalDateTime.now());
                     articleId = insertArticle(article);

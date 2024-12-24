@@ -61,4 +61,11 @@ public interface ArticleWriteService extends IService<Article> {
      * @param articleGetReq
      */
     void praise(ArticleGetReq articleGetReq);
+
+    /**
+     * 查询全部文章
+     * @return
+     */
+    List<ArticleUserVo> selectAll();
+
 }

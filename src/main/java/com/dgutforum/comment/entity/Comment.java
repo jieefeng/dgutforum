@@ -18,6 +18,7 @@ public class Comment {
     private String content;
     private Long parise;
     private short deleted;
+    private Long topCommentId;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

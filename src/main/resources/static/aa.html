@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技术派 - 技术分享平台</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        header {
+            background-color: #ff9800;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header .nav {
+            display: flex;
+            gap: 15px;
+        }
+        header .nav a {
+            color: #fff;
+            text-decoration: none;
+        }
+        header .actions {
+            display: flex;
+            gap: 10px;
+        }
+        header .actions button {
+            padding: 5px 10px;
+            background-color: #fff;
+            color: #ff9800;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .main {
+            padding: 20px;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .card-content {
+            padding: 15px;
+        }
+        .card-content h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+        .card-content p {
+            margin: 10px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        .sidebar {
+            margin-top: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+        }
+        .sidebar h3 {
+            margin: 0 0 10px;
+            font-size: 18px;
+        }
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">技术派</div>
+    <nav class="nav">
+        <a href="#">首页</a>
+        <a href="#">教程</a>
+        <a href="#">后端</a>
+        <a href="#">前端</a>
+        <a href="#">GitHub</a>
+        <a href="#">MySQL</a>
+        <a href="#">人工智能</a>
+        <a href="#">开发工具</a>
+    </nav>
+    <div class="actions">
+        <button>写文章</button>
+        <button>登录</button>
+    </div>
+</header>
+
+<div class="main">
+    <section class="card-grid">
+        <div class="card">
+            <img src="https://via.placeholder.com/300x150" alt="文章封面">
+            <div class="card-content">
+                <h3>二哥编程星球的简历服务</h3>
+                <p>让你投了就有面试，亮瞎 HR 的眼...</p>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://via.placeholder.com/300x150" alt="文章封面">
+            <div class="card-content">
+                <h3>如何将技术派写到简历上？</h3>
+                <p>详细讲解如何通过学习和项目提升简历吸引力...</p>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://via.placeholder.com/300x150" alt="文章封面">
+            <div class="card-content">
+                <h3>如何注册技术派？成为 VIP 的优势</h3>
+                <p>注册指南以及成为 VIP 后享受的特权...</p>
+            </div>
+        </div>
+    </section>
+
+    <aside class="sidebar">
+        <h3>关于技术派</h3>
+        <p>宣言：技术派上线了！学编程，就上技术派！</p>
+        <p>免费领取：Java进阶之路.pdf！</p>
+    </aside>
+</div>
+
+<footer>
+    技术派 &copy; 2024. All Rights Reserved.
+</footer>
+
+</body>
+</html>

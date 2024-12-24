@@ -36,6 +36,11 @@ public interface ArticleUserMapper {
             "from article a left join user ui on a.user_id = ui.id " +
             "where a.user_id = #{userId} and a.deleted = 0 ")
     List<ArticleUserVo> getArticleUserByArticleId(Long userId);
+
+    @Select("select a.*,ui.username,ui.photo " +
+            "from article a left join user ui on a.user_id = ui.id " +
+            "where a.deleted = 0 ")
+    List<ArticleUserVo> queryAll();
 }
 
 

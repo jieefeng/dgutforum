@@ -21,6 +21,7 @@ public class CommentConverter {
         comment.setUpdateTime(LocalDateTime.now());
         comment.setDeleted((short) 0);
         comment.setContent(req.getCommentContent());
+        comment.setTopCommentId(req.getTopCommentId());
         return comment;
     }
 }

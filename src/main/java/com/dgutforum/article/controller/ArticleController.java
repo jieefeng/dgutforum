@@ -32,6 +32,16 @@ public class ArticleController {
     private ArticleMapper articleMapper;
 
     /**
+     * 查询全部文章
+     * @return
+     */
+    @GetMapping("")
+    public ResVo<List<ArticleUserVo>> getAll(){
+        List<ArticleUserVo> articleUserVoList = articleWriteService.selectAll();
+        return ResVo.ok(articleUserVoList);
+    }
+
+    /**
      * 发布文章，完成后返回文章
      * @return
      */
@@ -81,6 +91,7 @@ public class ArticleController {
 //    }
 
 
+
     /**
      * 根据文章id更新文章或者删除
      * @param article
@@ -110,6 +121,11 @@ public class ArticleController {
         return ResVo.ok(articleWriteService.getArticleUserByArticleId(articleGetReq));
     }
 
+    public ResVo<List<ArticleUserVo>> getArticleUserCollectionByUserId(){
+
+        return null;
+    }
+
     /**
      * 根据用户id查询点赞列表
      * @param articleGetReq
@@ -120,6 +136,7 @@ public class ArticleController {
     public ResVo<List<ArticleUserVo>> getArticleUserPraiseByUserId(@RequestBody ArticleGetReq articleGetReq){
         return ResVo.ok(articleWriteService.getArticleUserPraiseByUserId(articleGetReq));
     }
+
 
     /**
      * 用户点赞
@@ -132,6 +149,8 @@ public class ArticleController {
         articleWriteService.praise(articleGetReq);
         return ResVo.ok(null);
     }
+
+
 }
 
 

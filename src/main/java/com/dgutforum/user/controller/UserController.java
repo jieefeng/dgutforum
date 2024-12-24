@@ -36,7 +36,6 @@ public class UserController {
 //        return Result.success(e);
         return ResVo.ok(e);
     }
-
     @PostMapping("/update")
     public ResVo update(@RequestBody User user){
         log.info("user information:{}", user);
@@ -49,7 +48,6 @@ public class UserController {
 
         return ResVo.ok(null);
     }
-
     @PostMapping("/follow/add")
     public ResVo follow_add(@RequestBody Follow follow){
         log.info("添加的关注follow:{}", follow);
@@ -58,7 +56,6 @@ public class UserController {
 
         return ResVo.ok(null);
     }
-
     @PostMapping("/follow/del")
     public ResVo follow_del(@RequestBody Follow follow){
         log.info("删除的关注follow:{}", follow);
@@ -67,12 +64,10 @@ public class UserController {
 
         return ResVo.ok(null);
     }
-
     @PostMapping("/follow")
     public ResVo<List<UserVo>> follow_select(@RequestBody Follow follow){
         log.info("查询的人的id:{}", follow);
         List<UserVo> e = userService.follow_select(follow);
         return ResVo.ok(e);
     }
-
 }
