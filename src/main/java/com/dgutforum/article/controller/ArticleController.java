@@ -144,7 +144,7 @@ public class ArticleController {
      * 根据用户id查询用户收藏的文章
      * @return
      */
-    @GetMapping("/getArticleUserCollection}")
+    @GetMapping("/getArticleUserCollection")
     public ResVo<List<ArticleUserVo>> getArticleUserCollectionByUserId(){
         List<ArticleUserVo> articleUserVoList = articleWriteService.getArticleUserCollectionByUserId();
         return ResVo.ok(articleUserVoList);

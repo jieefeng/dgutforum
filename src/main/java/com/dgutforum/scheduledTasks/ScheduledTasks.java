@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ScheduledTasks {
 
-    private final RedisTemplate<String,Object> redisTemplate;
+    private final RedisTemplate<String,String> redisTemplate;
 
     // 每天晚上 11 点执行
     @Scheduled(cron = "0 0 23 * * ?")
