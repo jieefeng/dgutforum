@@ -1,6 +1,8 @@
 package com.dgutforum.article.controller;
 
-import com.dgutforum.article.req.ArticleGetReq;
+import com.dgutforum.activity.service.ActivityService;
+import com.dgutforum.article.entity.ReadHistory;
+import com.dgutforum.article.req.praiseVo;
 import com.dgutforum.article.req.ArticleUserIdReq;
 import com.dgutforum.article.vo.ArticleUserVo;
 import com.dgutforum.article.entity.Article;
@@ -8,28 +10,32 @@ import com.dgutforum.common.result.ResVo;
 import com.dgutforum.article.service.ArticleWriteService;
 import com.dgutforum.article.req.ArticlePostReq;
 import com.dgutforum.common.result.eunms.StatusEnum;
+import com.dgutforum.context.ThreadLocalContext;
 import com.dgutforum.mapper.ArticleMapper;
+import com.dgutforum.mapper.ReadHistoryMapper;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @Slf4j
 @RequestMapping("/article")
 @Tag(name = "文章相关接口")
+@RequiredArgsConstructor
 public class ArticleController {
 
-    @Resource
-    private ArticleWriteService articleWriteService;
-
-    @Resource
-    private ArticleMapper articleMapper;
+    private final ArticleWriteService articleWriteService;
+    private final ArticleMapper articleMapper;
+    private final ReadHistoryMapper readHistoryMapper;
+    private final RabbitTemplate rabbitTemplate;
+    private final ActivityService activityService;
 
     /**
      * 查询全部文章
@@ -61,8 +67,21 @@ public class ArticleController {
     @GetMapping(path = "{articleId}")
     @Operation(summary = "根据文章id查询文章")
     public ResVo<ArticleUserVo> getArticleByArticleId(@PathVariable Long articleId){
+        //1.记录浏览记录
+        Long userId = ThreadLocalContext.getUserId();
+        ReadHistory readHistory = new ReadHistory();
+        readHistory.setArticleId(articleId);
+        readHistory.setUserId(userId);
+        readHistory.setReadTime(LocalDateTime.now());
+        readHistory.setCreateTime(LocalDateTime.now());
+        readHistory.setUpdateTime(LocalDateTime.now());
+        readHistoryMapper.save(readHistory);
+        //2.增加活跃度
+        activityService.addReadActivity(articleId, userId);
         return ResVo.ok(articleWriteService.getArticleUserVoById(articleId));
     }
+
+
 
     /**
      * 根据分类id查询文章
@@ -116,9 +135,9 @@ public class ArticleController {
     @PostMapping("get")
     @Operation(summary = "根据用户id查询文章")
     public ResVo<List<ArticleUserVo>> getArticleUserByArticleId(@RequestBody ArticleUserIdReq articleUserIdReq){
-        ArticleGetReq articleGetReq = new ArticleGetReq();
-        articleGetReq.setUserId(articleUserIdReq.getUserId());
-        return ResVo.ok(articleWriteService.getArticleUserByArticleId(articleGetReq));
+        praiseVo praiseVo = new praiseVo();
+        praiseVo.setUserId(articleUserIdReq.getUserId());
+        return ResVo.ok(articleWriteService.getArticleUserByArticleId(praiseVo));
     }
 
     /**
@@ -132,30 +151,28 @@ public class ArticleController {
     }
 
     /**
-     * 根据用户id查询点赞列表
-     * @param articleGetReq
+     * 根据用户id查询点赞过的文章
+     * @param praiseVo
      * @return
      */
     @PostMapping("getPraise")
     @Operation(summary = "根据用户id查询点赞列表")
-    public ResVo<List<ArticleUserVo>> getArticleUserPraiseByUserId(@RequestBody ArticleGetReq articleGetReq){
-        return ResVo.ok(articleWriteService.getArticleUserPraiseByUserId(articleGetReq));
+    public ResVo<List<ArticleUserVo>> getArticleUserPraiseByUserId(@RequestBody praiseVo praiseVo){
+        return ResVo.ok(articleWriteService.getArticleUserPraiseByUserId(praiseVo));
     }
 
 
     /**
-     * 用户点赞
-     * @param articleGetReq
+     * 用户点赞 如果传入了commentId就是对评论 否则是对评论点赞
+     * @param praiseVo
      * @return
      */
     @PostMapping("praise")
     @Operation(summary = "用户点赞")
-    public ResVo praise(@RequestBody ArticleGetReq articleGetReq){
-        articleWriteService.praise(articleGetReq);
+    public ResVo praise(@RequestBody praiseVo praiseVo){
+        articleWriteService.praise(praiseVo);
         return ResVo.ok(null);
     }
-
-
 }
 
 

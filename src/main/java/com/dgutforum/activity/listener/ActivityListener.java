@@ -17,7 +17,8 @@ public class ActivityListener {
     //key dgutforum_activity_rank_{user_id}_年月日
     //field:活跃度更新key
     //value:活跃度更新值
-    //点赞 + 2分 field:praise/article/{articleId}
+    //给文章点赞 + 2分 field:praise/article/{articleId}
+    //给评论点赞 + 2分field:praise/comment/{commentId}
     //阅读 + 1分 filed:read/article/{articleId}
 
     //日活跃榜单
@@ -26,15 +27,24 @@ public class ActivityListener {
     private final RedisTemplate<String,String> redisTemplate;
 
     private static final String ACTIVITY_PREFIX = "dgutforum_activity_rank";
-    private static final String PRAISE_FIELD_PREFIX = "praise/article";
-
+    private static final String PRAISE_ARTICLE_FIELD_PREFIX = "praise/article";
+    private static final String PRAISE_COMMENT_FIELD_PREFIX = "praise/comment";
     private static final String READ_FIELD_PREFIX = "read/acticle";
 
     @RabbitListener(queues = RabbitmqConfig.PRAISE_QUEUE)
     public void addActivity(ActivityVo activityVo){
         switch (activityVo.getStatusEnums()){
             case PRAISE -> {
-                String field = PRAISE_FIELD_PREFIX + "/" + activityVo.getArticleId();
+                String field = null;
+                if(activityVo.getCommentId() != null){
+                    //说明是评论
+                    field = PRAISE_COMMENT_FIELD_PREFIX
+                            + "/"
+                            + activityVo.getCommentId();
+                }else {
+                    //说明是文章
+                    field = PRAISE_ARTICLE_FIELD_PREFIX + "/" + activityVo.getArticleId();
+                }
                 addActivity(activityVo,field,2);
             }
             case READ -> {

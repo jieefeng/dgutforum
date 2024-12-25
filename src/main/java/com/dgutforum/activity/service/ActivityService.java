@@ -16,19 +16,22 @@ public class ActivityService {
     private final RabbitTemplate rabbitTemplate;
     private final CommentPraiseMapper commentPraiseMapper;
     private final ArticlePraiseMapper articlePraiseMapper;
-    public void praise(ActivityVo activityVo) {
-        //判断是给文章还是评论点赞
-        //1.是文章
-        if(activityVo.getArticleId() != null){
-            //1.1保存点赞
-            articlePraiseMapper.save(activityVo.getArticleId(),activityVo.getUserId());
-            activityVo.setStatusEnums(StatusEnums.PRAISE);
-        } else {
-            //1.2是评论
-            commentPraiseMapper.save(activityVo);
-            activityVo.setStatusEnums(StatusEnums.COMMENT);
+    public void addPraiseActivity(Long articleId, Long userId,Long commentId) {
+        ActivityVo activityVo = new ActivityVo();
+        if(commentId != null){
+            activityVo.setCommentId(commentId);
         }
-        //2.增加活跃度
+        activityVo.setStatusEnums(StatusEnums.PRAISE);
+        activityVo.setArticleId(articleId);
+        activityVo.setUserId(userId);
         rabbitTemplate.convertAndSend(RabbitmqConfig.ACTIVITY_DIRECT,RabbitmqConfig.ACTIVITY_BINGING,activityVo);
+    }
+
+    public void addReadActivity(Long articleId, Long userId) {
+        ActivityVo activityVo = new ActivityVo();
+        activityVo.setStatusEnums(StatusEnums.READ);
+        activityVo.setArticleId(articleId);
+        activityVo.setUserId(userId);
+        rabbitTemplate.convertAndSend(RabbitmqConfig.ACTIVITY_DIRECT,RabbitmqConfig.ACTIVITY_BINGING);
     }
 }

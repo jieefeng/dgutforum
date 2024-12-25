@@ -2,10 +2,11 @@ package com.dgutforum.article.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.dgutforum.article.req.ArticleGetReq;
+import com.dgutforum.article.req.praiseVo;
 import com.dgutforum.article.vo.ArticleUserVo;
 import com.dgutforum.article.entity.Article;
 import com.dgutforum.article.req.ArticlePostReq;
+import com.dgutforum.article.vo.BrowseHistoryVo;
 
 import java.util.List;
 
@@ -44,23 +45,23 @@ public interface ArticleWriteService extends IService<Article> {
 
     /**
      * 根据用户id查询文章
-     * @param articleGetReq
+     * @param praiseVo
      * @return
      */
-    List<ArticleUserVo> getArticleUserByArticleId(ArticleGetReq articleGetReq);
+    List<ArticleUserVo> getArticleUserByArticleId(praiseVo praiseVo);
 
     /**
      * 根据用户id查询点赞列表
-     * @param articleGetReq
+     * @param praiseVo
      * @return
      */
-    List<ArticleUserVo> getArticleUserPraiseByUserId(ArticleGetReq articleGetReq);
+    List<ArticleUserVo> getArticleUserPraiseByUserId(praiseVo praiseVo);
 
     /**
      * 用户点赞
-     * @param articleGetReq
+     * @param praiseVo
      */
-    void praise(ArticleGetReq articleGetReq);
+    void praise(praiseVo praiseVo);
 
     /**
      * 查询全部文章
@@ -74,4 +75,5 @@ public interface ArticleWriteService extends IService<Article> {
      */
     List<ArticleUserVo> getArticleUserCollectionByUserId();
 
+    List<ArticleUserVo> getBorwseHistoryWithTime(BrowseHistoryVo browseHistoryVo);
 }
