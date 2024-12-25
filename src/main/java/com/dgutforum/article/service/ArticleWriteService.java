@@ -76,4 +76,6 @@ public interface ArticleWriteService extends IService<Article> {
     List<ArticleUserVo> getArticleUserCollectionByUserId();
 
     List<ArticleUserVo> getBorwseHistoryWithTime(BrowseHistoryVo browseHistoryVo);
+
+
 }

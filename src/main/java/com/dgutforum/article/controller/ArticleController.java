@@ -6,9 +6,11 @@ import com.dgutforum.article.req.praiseVo;
 import com.dgutforum.article.req.ArticleUserIdReq;
 import com.dgutforum.article.vo.ArticleUserVo;
 import com.dgutforum.article.entity.Article;
+import com.dgutforum.article.vo.BrowseHistoryVo;
 import com.dgutforum.common.result.ResVo;
 import com.dgutforum.article.service.ArticleWriteService;
 import com.dgutforum.article.req.ArticlePostReq;
+import com.dgutforum.common.result.Result;
 import com.dgutforum.common.result.eunms.StatusEnum;
 import com.dgutforum.context.ThreadLocalContext;
 import com.dgutforum.mapper.ArticleMapper;
@@ -42,9 +44,9 @@ public class ArticleController {
      * @return
      */
     @GetMapping("")
-    public ResVo<List<ArticleUserVo>> getAll(){
+    public Result getAll(){
         List<ArticleUserVo> articleUserVoList = articleWriteService.selectAll();
-        return ResVo.ok(articleUserVoList);
+        return Result.success(articleUserVoList);
     }
 
     /**
@@ -53,10 +55,10 @@ public class ArticleController {
      */
     @PostMapping(path = "save")
     @Operation(summary = "发布文章，完成后返回文章")
-    public ResVo<ArticleUserVo> post(@RequestBody ArticlePostReq req) throws IOException {
+    public Result post(@RequestBody ArticlePostReq req) throws IOException {
         log.info("发布文章:{}",req);
         ArticleUserVo articleUserVo = articleWriteService.saveArticle(req, req.getUserId());
-        return ResVo.ok(articleUserVo);
+        return Result.success(articleUserVo);
     }
 
     /**
@@ -66,7 +68,7 @@ public class ArticleController {
      */
     @GetMapping(path = "{articleId}")
     @Operation(summary = "根据文章id查询文章")
-    public ResVo<ArticleUserVo> getArticleByArticleId(@PathVariable Long articleId){
+    public Result getArticleByArticleId(@PathVariable Long articleId){
         //1.记录浏览记录
         Long userId = ThreadLocalContext.getUserId();
         ReadHistory readHistory = new ReadHistory();
@@ -78,7 +80,9 @@ public class ArticleController {
         readHistoryMapper.save(readHistory);
         //2.增加活跃度
         activityService.addReadActivity(articleId, userId);
-        return ResVo.ok(articleWriteService.getArticleUserVoById(articleId));
+        //3.查询文章
+        ArticleUserVo articleUserVoById = articleWriteService.getArticleUserVoById(articleId);
+        return Result.success(articleUserVoById);
     }
 
 
@@ -90,8 +94,8 @@ public class ArticleController {
      */
     @GetMapping("/category/{categoryId}")
     @Operation(summary = "根据分类id查询文章")
-    public ResVo<List<ArticleUserVo>> getByCategoryId(@PathVariable Long categoryId){
-        return ResVo.ok(articleWriteService.getByCategoryId(categoryId));
+    public Result getByCategoryId(@PathVariable Long categoryId){
+        return Result.success(articleWriteService.getByCategoryId(categoryId));
     }
 
 //    /**
@@ -118,12 +122,12 @@ public class ArticleController {
      */
     @PostMapping(path = "update")
     @Operation(summary = "根据文章id更新文章或者删除")
-    public ResVo<Long> deleteArticleByArticleId(@RequestBody Article article){
+    public Result deleteArticleByArticleId(@RequestBody Article article){
         boolean success = articleWriteService.updateById(article);
         if(success){
-            return ResVo.ok(1L);
+            return Result.success(1L);
         } else {
-            return ResVo.fail(StatusEnum.ILLEGAL_ARGUMENTS_MIXED);
+            return Result.error("参数异常");
         }
     }
 
@@ -134,10 +138,10 @@ public class ArticleController {
      */
     @PostMapping("get")
     @Operation(summary = "根据用户id查询文章")
-    public ResVo<List<ArticleUserVo>> getArticleUserByArticleId(@RequestBody ArticleUserIdReq articleUserIdReq){
+    public Result getArticleUserByArticleId(@RequestBody ArticleUserIdReq articleUserIdReq){
         praiseVo praiseVo = new praiseVo();
         praiseVo.setUserId(articleUserIdReq.getUserId());
-        return ResVo.ok(articleWriteService.getArticleUserByArticleId(praiseVo));
+        return Result.success(articleWriteService.getArticleUserByArticleId(praiseVo));
     }
 
     /**
@@ -145,9 +149,9 @@ public class ArticleController {
      * @return
      */
     @GetMapping("/getArticleUserCollection")
-    public ResVo<List<ArticleUserVo>> getArticleUserCollectionByUserId(){
+    public Result getArticleUserCollectionByUserId(){
         List<ArticleUserVo> articleUserVoList = articleWriteService.getArticleUserCollectionByUserId();
-        return ResVo.ok(articleUserVoList);
+        return Result.success(articleUserVoList);
     }
 
     /**
@@ -157,8 +161,8 @@ public class ArticleController {
      */
     @PostMapping("getPraise")
     @Operation(summary = "根据用户id查询点赞列表")
-    public ResVo<List<ArticleUserVo>> getArticleUserPraiseByUserId(@RequestBody praiseVo praiseVo){
-        return ResVo.ok(articleWriteService.getArticleUserPraiseByUserId(praiseVo));
+    public Result getArticleUserPraiseByUserId(@RequestBody praiseVo praiseVo){
+        return Result.success(articleWriteService.getArticleUserPraiseByUserId(praiseVo));
     }
 
 
@@ -169,10 +173,23 @@ public class ArticleController {
      */
     @PostMapping("praise")
     @Operation(summary = "用户点赞")
-    public ResVo praise(@RequestBody praiseVo praiseVo){
+    public Result praise(@RequestBody praiseVo praiseVo){
         articleWriteService.praise(praiseVo);
-        return ResVo.ok(null);
+        return Result.success();
     }
+
+    /**
+     * 根据用户Id一段内他的浏览记录
+     * @param browseHistoryVo
+     * @return
+     */
+    @PostMapping("getReadHistoryWithTime")
+    public Result getReadHistoryWithTime(BrowseHistoryVo browseHistoryVo){
+        List<ArticleUserVo> borwseHistoryWithTime = articleWriteService.getBorwseHistoryWithTime(browseHistoryVo);
+        return Result.success(borwseHistoryWithTime);
+    }
+
+
 }
 
 
