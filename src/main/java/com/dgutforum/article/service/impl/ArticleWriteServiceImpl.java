@@ -3,12 +3,16 @@ package com.dgutforum.article.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dgutforum.activity.eums.StatusEnums;
+import com.dgutforum.activity.vo.ActivityVo;
+import com.dgutforum.article.entity.ReadHistory;
 import com.dgutforum.article.req.ArticleGetReq;
 import com.dgutforum.article.vo.ArticleUserVo;
 import com.dgutforum.common.util.NumUtil;
 import com.dgutforum.article.converter.ArticleConverter;
 
 import com.dgutforum.article.entity.Article;
+import com.dgutforum.config.RabbitmqConfig;
 import com.dgutforum.context.ThreadLocalContext;
 import com.dgutforum.image.service.ImageService;
 import com.dgutforum.mapper.*;
@@ -18,6 +22,7 @@ import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
@@ -42,6 +47,9 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
     private final ArticlePraiseMapper articlePraiseMapper;
     private final UserInfoMapper userInfoMapper;
     private final ActivityCollectionMapper activityCollectionMapper;
+    private final ReadHistoryMapper readHistoryMapper;
+    private final RabbitTemplate rabbitTemplate;
+
 
     /**
      * 根据分类id查询文章
@@ -84,8 +92,20 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
         Long praiseNumber = articlePraiseMapper.getArticlePraiseByArticleId(articleId);
         articleUserVo.setPraise(praiseNumber);
         //4.增加用户阅读文章数
-        userInfoMapper.incrementReadCountByuserId(ThreadLocalContext.getUserId());
-        //TODO 5.增加活跃度 阅读+1
+        Long userId = ThreadLocalContext.getUserId();
+        userInfoMapper.incrementReadCountByuserId(userId);
+        //5.记录浏览记录
+        ReadHistory readHistory = new ReadHistory();
+        readHistory.setArticleId(articleId);
+        readHistory.setUserId(userId);
+        readHistory.setReadTime(LocalDateTime.now());
+        readHistoryMapper.save(readHistory);
+        //6.增加活跃度
+        ActivityVo activityVo = new ActivityVo();
+        activityVo.setStatusEnums(StatusEnums.READ);
+        activityVo.setArticleId(articleId);
+        activityVo.setUserId(userId);
+        rabbitTemplate.convertAndSend(RabbitmqConfig.ACTIVITY_DIRECT,RabbitmqConfig.ACTIVITY_BINGING);
         return articleUserVo;
     }
 
@@ -184,7 +204,7 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
                 Long articleId;
                 if (NumUtil.nullOrZero(req.getArticleId())) {
                     //1.增加发布文章数
-                    userInfoMapper.incrementPraiseCountByuserId(req.getUserId());
+                    userInfoMapper.incrementPublishCount(req.getUserId());
                     //2.保存文章
                     article.setCreateTime(LocalDateTime.now());
                     article.setUpdateTime(LocalDateTime.now());

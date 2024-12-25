@@ -29,6 +29,6 @@ public class ActivityService {
             activityVo.setStatusEnums(StatusEnums.COMMENT);
         }
         //2.增加活跃度
-        rabbitTemplate.convertAndSend(RabbitmqConfig.ACTIVITY_DIRECT,RabbitmqConfig.PRAISE_BINGING,activityVo);
+        rabbitTemplate.convertAndSend(RabbitmqConfig.ACTIVITY_DIRECT,RabbitmqConfig.ACTIVITY_BINGING,activityVo);
     }
 }

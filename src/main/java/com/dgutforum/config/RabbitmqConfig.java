@@ -16,7 +16,7 @@ public class RabbitmqConfig {
 
     public static final String PRAISE_QUEUE = "dgutforum.activity.praise";
 
-    public static final String PRAISE_BINGING = "praise";
+    public static final String ACTIVITY_BINGING = "addActivity";
 
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
@@ -49,6 +49,6 @@ public class RabbitmqConfig {
      */
     @Bean
     public Binding bindingPraise(Queue activityQueue,DirectExchange activityExchange){
-        return BindingBuilder.bind(activityQueue).to(activityExchange).with(PRAISE_BINGING);
+        return BindingBuilder.bind(activityQueue).to(activityExchange).with(ACTIVITY_BINGING);
     }
 }

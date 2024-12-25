@@ -9,6 +9,7 @@ public class ReadHistory {
     private Long id;
     private Long userId;
     private Long articleId;
+    private LocalDateTime readTime;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }
