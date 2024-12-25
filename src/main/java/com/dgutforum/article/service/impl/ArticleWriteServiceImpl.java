@@ -151,6 +151,10 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
     }
 
 
+    /**
+     * 查询全部文章
+     * @return
+     */
     @Override
     public List<ArticleUserVo> selectAll() {
         log.info("查询全部文章");
