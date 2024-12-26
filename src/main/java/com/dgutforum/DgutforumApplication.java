@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 @ServletComponentScan
 @SpringBootApplication
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5173")
 public class DgutforumApplication {
 
     public static void main(String[] args) {

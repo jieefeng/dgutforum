@@ -8,16 +8,14 @@ import com.dgutforum.user.pojo.UserVo;
 import com.dgutforum.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @Slf4j
 @RequestMapping("/user")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
     @Autowired
@@ -27,27 +25,28 @@ public class UserController {
     /**
      * 回显界面
      */
-    @PostMapping("/get")
-    public ResVo<User> get(@RequestBody User user){
-        log.info("要get的id:{}", user.getId());
+    @GetMapping("/{id}")
+    public Result get(@PathVariable long id){
+        log.info("要get的id:{}", id);
 
-        User e = userService.get(user);
+        UserVo userVo = userService.get(id);
 
-//        return Result.success(e);
-        return ResVo.ok(e);
+        return Result.success(userVo);
     }
-    @PostMapping("/update")
-    public ResVo update(@RequestBody User user){
+
+    @PutMapping()
+    public Result update(@RequestBody User user){
         log.info("user information:{}", user);
 
-        try {
-            userService.update(user);
-        } catch (Exception e) {
-            return  ResVo.ok("用户名重复");
+        boolean flag = userService.update(user);
+        if (!flag){
+            return Result.error("用户名重复");
         }
 
-        return ResVo.ok(null);
+        return Result.success();
     }
+
+
     @PostMapping("/follow/add")
     public ResVo follow_add(@RequestBody Follow follow){
         log.info("添加的关注follow:{}", follow);

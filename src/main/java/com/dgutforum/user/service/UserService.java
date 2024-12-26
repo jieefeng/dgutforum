@@ -15,14 +15,13 @@ public interface UserService {
 
     User select(User user);
 
-    void update(User user);
+    boolean update(User user);
 
     void follow_add(Follow follow);
 
     void follow_del(Follow follow);
 
-
-    User get(User user);
+    UserVo get(long id);
 
     List<UserVo> follow_select(Follow follow);
 

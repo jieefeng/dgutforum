@@ -25,7 +25,10 @@ public interface UserMapper {
     void update(User user);
 
     @Select("select * from user where id = #{id}")
-    User get(User user);
+    User get(long id);
+
+    @Select("select * from user where username = #{username}")
+    User getByUserName(String username);
 
     @Insert("insert into user_relation(user_id, follow_user_id, create_time, update_time) " +
             "values(#{userId},#{followUserId},#{createTime},#{updateTime})")

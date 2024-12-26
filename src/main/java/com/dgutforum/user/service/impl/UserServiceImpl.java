@@ -5,10 +5,14 @@ import com.dgutforum.user.pojo.Follow;
 import com.dgutforum.user.pojo.User;
 import com.dgutforum.user.pojo.UserVo;
 import com.dgutforum.user.service.UserService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -40,14 +44,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(User user) {
+    public boolean update(User user) {
+        //判断名字唯一
+        User ifuser = userMapper.getByUserName(user.getUsername());
+        if (ifuser != null && ifuser.getId() != user.getId() ) {
+            return false;
+        }
+
         user.setUpdateTime(LocalDateTime.now());
 
-        /**
-         * username的唯一索引 还没有 抛出异常
-         */
-
         userMapper.update(user);
+        return true;
     }
 
     @Override
@@ -63,10 +70,19 @@ public class UserServiceImpl implements UserService {
         userMapper.follow_del(follow);
     }
 
-    public User get(User user) {
-        User e = userMapper.get(user);
+    public UserVo get(long id) {
+        User user = userMapper.get(id);
 
-        return e;
+        UserVo userVo = new UserVo();
+
+//        获取属性
+        BeanUtils.copyProperties(user,userVo);
+
+//        计算加入天数
+        long enterDaysCount = ChronoUnit.DAYS.between(user.getCreateTime().toLocalDate(), LocalDateTime.now().toLocalDate());
+        userVo.setEnterDaysCount(enterDaysCount);
+
+        return userVo;
     }
 
     @Override

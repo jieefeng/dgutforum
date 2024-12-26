@@ -16,6 +16,9 @@ public class User {
     private String password;
     private String photo;
     private String profile;
+    private String email;
+    private long followerCount;
+    private long followCount;
     private LocalDateTime createTime; //创建时间
     private LocalDateTime updateTime; //修改时间
 

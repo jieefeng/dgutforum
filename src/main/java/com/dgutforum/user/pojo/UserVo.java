@@ -13,4 +13,9 @@ public class UserVo  {
 
     private String username;
     private String photo;
+    private String profile;
+    private String email;
+    private long followerCount;
+    private long followCount;
+    private long enterDaysCount;
 }
