@@ -28,10 +28,3 @@ mybatis-plus:
     map-underscore-to-camel-case: true
 
 
-image:
-  type: ali
-  prefix: dgutforum/
-  endpoint: oss-cn-shenzhen.aliyuncs.com
-  ak: LTAI5tFJEaNeR8VkR9Mmtp9Q
-  sk: coXaEgImLoXKoArH92eMWSksofNXln
-  bucket: web-framework10088
