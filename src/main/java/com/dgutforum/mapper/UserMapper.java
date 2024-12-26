@@ -11,12 +11,13 @@ import java.util.List;
 public interface UserMapper {
 
 
-    @Select("select * from user where username = #{username} and password = #{password}")
+    @Select("select * from user where username = #{username}")
     User login(User user);
 
     @Insert("insert into user(username, password, create_time, update_time) " +
             "values(#{username},#{password},#{createTime},#{updateTime})")
-    void register(User user);
+    @SelectKey(statement = "SELECT LAST_INSERT_ID()", keyProperty = "id", before = false, resultType = Long.class)
+    Long register(User user);
 
     @Select("select * from user where username = #{username}")
     User select(User user);
@@ -39,4 +40,8 @@ public interface UserMapper {
 
 
     List<UserVo> id_select(List<Integer> list);
+
+    @Insert("insert into user_info(user_id) " +
+            "values(#{userId})")
+    void registerUserInfo(Long userId);
 }

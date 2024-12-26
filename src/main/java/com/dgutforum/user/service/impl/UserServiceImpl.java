@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,7 +23,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void register(User user) {
+    public Long register(User user) {
         user.setCreateTime(LocalDateTime.now());
         user.setUpdateTime(LocalDateTime.now());
 
@@ -32,7 +31,7 @@ public class UserServiceImpl implements UserService {
          * username的唯一索引 还没有 抛出异常
           */
 
-        userMapper.register(user);
+        return userMapper.register(user);
     }
 
     @Override
@@ -82,6 +81,11 @@ public class UserServiceImpl implements UserService {
         List<UserVo> e = userMapper.id_select(list);
 
         return e;
+    }
+
+    @Override
+    public void registerUserInfo(Long userId) {
+        userMapper.registerUserInfo(userId);
     }
 
 

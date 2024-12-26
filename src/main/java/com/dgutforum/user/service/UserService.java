@@ -11,7 +11,7 @@ import java.util.List;
 public interface UserService {
     public User login(User user);
 
-    void register(User user);
+    Long register(User user);
 
     User select(User user);
 
@@ -25,4 +25,6 @@ public interface UserService {
     User get(User user);
 
     List<UserVo> follow_select(Follow follow);
+
+    void registerUserInfo(Long userId);
 }
