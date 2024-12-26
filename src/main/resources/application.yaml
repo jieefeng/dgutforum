@@ -5,16 +5,21 @@ spring:
     name: dgutforum
   rabbitmq:
     host: 192.168.80.131
-    port: 6379
+    port: 5672
     name: itheima
     password: 123321
     virtual-host: dgutforum
-    pool-size: 10
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://192.168.80.131:3306/dgutforum?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 123
+  data:
+    redis:
+      host: 192.168.80.131
+      port: 6379
+      database: 0
+      password: 123321
 
 
 mybatis-plus:
@@ -23,3 +28,10 @@ mybatis-plus:
     map-underscore-to-camel-case: true
 
 
+image:
+  type: ali
+  prefix: dgutforum/
+  endpoint: oss-cn-shenzhen.aliyuncs.com
+  ak: LTAI5tFJEaNeR8VkR9Mmtp9Q
+  sk: coXaEgImLoXKoArH92eMWSksofNXln
+  bucket: web-framework10088

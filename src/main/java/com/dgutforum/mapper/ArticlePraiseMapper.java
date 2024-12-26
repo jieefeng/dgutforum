@@ -1,5 +1,7 @@
 package com.dgutforum.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.dgutforum.article.entity.ArticlePraise;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -7,7 +9,7 @@ import org.apache.ibatis.annotations.Select;
 import java.util.ArrayList;
 
 @Mapper
-public interface ArticlePraiseMapper {
+public interface ArticlePraiseMapper extends BaseMapper<ArticlePraise> {
 
     @Select("select article_id " +
             "from article_praise " +

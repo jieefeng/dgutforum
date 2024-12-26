@@ -8,6 +8,8 @@ import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,8 +23,15 @@ public class RabbitmqConfig {
     public static final String ACTIVITY_BINGING = "addActivity";
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-        return new RabbitTemplate(connectionFactory);
+    public MessageConverter messageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate(org.springframework.amqp.rabbit.connection.ConnectionFactory connectionFactory) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setMessageConverter(messageConverter());
+        return template;
     }
 
     /**
@@ -53,6 +62,8 @@ public class RabbitmqConfig {
     public Binding bindingPraise(Queue activityQueue,DirectExchange activityExchange){
         return BindingBuilder.bind(activityQueue).to(activityExchange).with(ACTIVITY_BINGING);
     }
+
+
 
     @Bean
     public ConnectionFactory connectionFactory() {

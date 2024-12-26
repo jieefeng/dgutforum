@@ -5,6 +5,7 @@ import com.dgutforum.config.RabbitmqConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -18,18 +19,22 @@ public class ActivityListener {
     //field:活跃度更新key
     //value:活跃度更新值
     //给文章点赞 + 2分 field:praise/article/{articleId}
-    //给评论点赞 + 2分field:praise/comment/{commentId}
+    //给评论点赞 + 2分 field:praise/comment/{commentId}
     //阅读 + 1分 filed:read/article/{articleId}
+    //收藏文章: + 3分 field:collection/article/{articleId}5
 
     //日活跃榜单
     //key :dgutforum_activity_rank_年月日
 
-    private final RedisTemplate<String,String> redisTemplate;
+//    private final RedisTemplate<String,String> redisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
 
-    private static final String ACTIVITY_PREFIX = "dgutforum_activity_rank";
+    private static final String ACTIVITY_PREFIX = "dgutforum:activity:rank";
     private static final String PRAISE_ARTICLE_FIELD_PREFIX = "praise/article";
     private static final String PRAISE_COMMENT_FIELD_PREFIX = "praise/comment";
     private static final String READ_FIELD_PREFIX = "read/acticle";
+
+    private static final String COLLECTION_FILED_PREFIX = "collection/article";
 
     @RabbitListener(queues = RabbitmqConfig.PRAISE_QUEUE)
     public void addActivity(ActivityVo activityVo){
@@ -51,17 +56,21 @@ public class ActivityListener {
                 String field = READ_FIELD_PREFIX + "/" + activityVo.getArticleId();
                 addActivity(activityVo,field,1);
             }
+            case COLLECTION -> {
+                String field = COLLECTION_FILED_PREFIX + "/" + activityVo.getArticleId();
+                addActivity(activityVo,field,3);
+            }
         }
     }
 
     private void addActivity(ActivityVo activityVo, String field,Integer score) {
         Long userId = activityVo.getUserId();
         String userActionKey = ACTIVITY_PREFIX
-                + "_"
-                + userId + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        Long value = Long.valueOf((String) redisTemplate.opsForHash().get(userActionKey,field));
-        //1.说明之前无加分记录，可以添加
+                + ":"
+                + userId + ":" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        Object value = stringRedisTemplate.opsForHash().get(userActionKey, field);
         if(value == null){
+            //1.说明之前无加分记录，可以添加
             //加分值
             doAddActivity(userActionKey, field, userId, score);
         } else {
@@ -71,13 +80,13 @@ public class ActivityListener {
 
     private void doAddActivity(String userActionKey, String field, Long userId, Integer score) {
         //1.标记用户已经执行过这个活跃度行为
-        redisTemplate.opsForHash().put(userActionKey, field,1);
+        stringRedisTemplate.opsForHash().put(userActionKey, field,"1");
         //2.添加日活跃度
-        String todayKey = ACTIVITY_PREFIX + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        redisTemplate.opsForZSet().add(todayKey, String.valueOf(userId), score);
+        String todayKey = ACTIVITY_PREFIX + ":" + "day" + ":" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        stringRedisTemplate.opsForZSet().incrementScore(todayKey, String.valueOf(userId), score);
         //3.添加月活跃度
-        String monthKey = ACTIVITY_PREFIX + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
-        redisTemplate.opsForZSet().add(monthKey,String.valueOf(userId), score);
+        String monthKey = ACTIVITY_PREFIX + ":" + "month" + ":" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
+        stringRedisTemplate.opsForZSet().incrementScore(monthKey,String.valueOf(userId), score);
     }
 }
 

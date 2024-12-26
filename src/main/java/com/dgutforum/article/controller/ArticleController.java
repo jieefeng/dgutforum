@@ -1,18 +1,18 @@
 package com.dgutforum.article.controller;
 
 import com.dgutforum.activity.service.ActivityService;
+import com.dgutforum.article.entity.ArticleCollection;
 import com.dgutforum.article.entity.ReadHistory;
-import com.dgutforum.article.req.praiseVo;
+import com.dgutforum.article.vo.PraiseVo;
 import com.dgutforum.article.req.ArticleUserIdReq;
 import com.dgutforum.article.vo.ArticleUserVo;
 import com.dgutforum.article.entity.Article;
 import com.dgutforum.article.vo.BrowseHistoryVo;
-import com.dgutforum.common.result.ResVo;
 import com.dgutforum.article.service.ArticleWriteService;
 import com.dgutforum.article.req.ArticlePostReq;
 import com.dgutforum.common.result.Result;
-import com.dgutforum.common.result.eunms.StatusEnum;
 import com.dgutforum.context.ThreadLocalContext;
+import com.dgutforum.mapper.ArticleCollectionMapper;
 import com.dgutforum.mapper.ArticleMapper;
 import com.dgutforum.mapper.ReadHistoryMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,12 +38,14 @@ public class ArticleController {
     private final ReadHistoryMapper readHistoryMapper;
     private final RabbitTemplate rabbitTemplate;
     private final ActivityService activityService;
+    private final ArticleCollectionMapper articleCollectionMapper;
 
     /**
      * 查询全部文章
      * @return
      */
     @GetMapping("")
+    @Operation(summary = "查询全部文章")
     public Result getAll(){
         List<ArticleUserVo> articleUserVoList = articleWriteService.selectAll();
         return Result.success(articleUserVoList);
@@ -70,6 +72,7 @@ public class ArticleController {
     @Operation(summary = "根据文章id查询文章")
     public Result getArticleByArticleId(@PathVariable Long articleId){
         //1.记录浏览记录
+        //1.1先查询是否存在
         Long userId = ThreadLocalContext.getUserId();
         ReadHistory readHistory = new ReadHistory();
         readHistory.setArticleId(articleId);
@@ -77,7 +80,11 @@ public class ArticleController {
         readHistory.setReadTime(LocalDateTime.now());
         readHistory.setCreateTime(LocalDateTime.now());
         readHistory.setUpdateTime(LocalDateTime.now());
-        readHistoryMapper.save(readHistory);
+        ReadHistory query = readHistoryMapper.query(readHistory);
+        if(query == null){
+            //1.2记录浏览记录
+            readHistoryMapper.insert(readHistory);
+        }
         //2.增加活跃度
         activityService.addReadActivity(articleId, userId);
         //3.查询文章
@@ -139,7 +146,7 @@ public class ArticleController {
     @PostMapping("get")
     @Operation(summary = "根据用户id查询文章")
     public Result getArticleUserByArticleId(@RequestBody ArticleUserIdReq articleUserIdReq){
-        praiseVo praiseVo = new praiseVo();
+        PraiseVo praiseVo = new PraiseVo();
         praiseVo.setUserId(articleUserIdReq.getUserId());
         return Result.success(articleWriteService.getArticleUserByArticleId(praiseVo));
     }
@@ -149,6 +156,7 @@ public class ArticleController {
      * @return
      */
     @GetMapping("/getArticleUserCollection")
+    @Operation(summary = "根据用户id查询用户收藏的文章")
     public Result getArticleUserCollectionByUserId(){
         List<ArticleUserVo> articleUserVoList = articleWriteService.getArticleUserCollectionByUserId();
         return Result.success(articleUserVoList);
@@ -161,7 +169,7 @@ public class ArticleController {
      */
     @PostMapping("getPraise")
     @Operation(summary = "根据用户id查询点赞列表")
-    public Result getArticleUserPraiseByUserId(@RequestBody praiseVo praiseVo){
+    public Result getArticleUserPraiseByUserId(@RequestBody PraiseVo praiseVo){
         return Result.success(articleWriteService.getArticleUserPraiseByUserId(praiseVo));
     }
 
@@ -173,8 +181,20 @@ public class ArticleController {
      */
     @PostMapping("praise")
     @Operation(summary = "用户点赞")
-    public Result praise(@RequestBody praiseVo praiseVo){
+    public Result praise(@RequestBody PraiseVo praiseVo){
         articleWriteService.praise(praiseVo);
+        return Result.success();
+    }
+
+    /**
+     * 用户收藏文章
+     * @param articleCollection
+     * @return
+     */
+    @Operation(summary = "用户收藏文章")
+    @PostMapping("/collection")
+    public Result collection(@RequestBody ArticleCollection articleCollection){
+        articleWriteService.collection(articleCollection);
         return Result.success();
     }
 
@@ -184,7 +204,8 @@ public class ArticleController {
      * @return
      */
     @PostMapping("getReadHistoryWithTime")
-    public Result getReadHistoryWithTime(BrowseHistoryVo browseHistoryVo){
+    @Operation(summary = "根据用户Id一段内他的浏览记录")
+    public Result getReadHistoryWithTime(@RequestBody BrowseHistoryVo browseHistoryVo){
         List<ArticleUserVo> borwseHistoryWithTime = articleWriteService.getBorwseHistoryWithTime(browseHistoryVo);
         return Result.success(borwseHistoryWithTime);
     }

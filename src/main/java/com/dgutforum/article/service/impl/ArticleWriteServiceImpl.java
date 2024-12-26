@@ -4,13 +4,18 @@ package com.dgutforum.article.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dgutforum.activity.eums.StatusEnums;
 import com.dgutforum.activity.service.ActivityService;
-import com.dgutforum.article.req.praiseVo;
+import com.dgutforum.activity.vo.ActivityVo;
+import com.dgutforum.article.entity.ArticleCollection;
+import com.dgutforum.article.entity.ArticlePraise;
+import com.dgutforum.article.vo.PraiseVo;
 import com.dgutforum.article.vo.ArticleUserVo;
 import com.dgutforum.article.vo.BrowseHistoryVo;
 import com.dgutforum.common.util.NumUtil;
 import com.dgutforum.article.converter.ArticleConverter;
 import com.dgutforum.article.entity.Article;
+import com.dgutforum.config.RabbitmqConfig;
 import com.dgutforum.context.ThreadLocalContext;
 import com.dgutforum.image.service.ImageService;
 import com.dgutforum.mapper.*;
@@ -41,7 +46,7 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
     private final CommentMapper commentMapper;
     private final ArticlePraiseMapper articlePraiseMapper;
     private final UserInfoMapper userInfoMapper;
-    private final ActivityCollectionMapper activityCollectionMapper;
+    private final ArticleCollectionMapper articleCollectionMapper;
     private final ReadHistoryMapper readHistoryMapper;
     private final RabbitTemplate rabbitTemplate;
     private final ActivityService activityService;
@@ -99,7 +104,7 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
      * @return
      */
     @Override
-    public List<ArticleUserVo> getArticleUserByArticleId(praiseVo praiseVo) {
+    public List<ArticleUserVo> getArticleUserByArticleId(PraiseVo praiseVo) {
         List<ArticleUserVo> articleUserByArticleId = articleUserMapper.getArticleUserByArticleId(praiseVo.getUserId());
         log.info("根据用户id查询文章:{}",articleUserByArticleId);
         return articleUserByArticleId;
@@ -111,7 +116,7 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
      * @return
      */
     @Override
-    public List<ArticleUserVo> getArticleUserPraiseByUserId(praiseVo praiseVo) {
+    public List<ArticleUserVo> getArticleUserPraiseByUserId(PraiseVo praiseVo) {
         //1.根据用户id查询用户点赞过的文章id列表
         ArrayList<Long> praiseList = articlePraiseMapper.getArticleIdByuserId(praiseVo.getUserId());
         //2.查询文章列表
@@ -127,26 +132,34 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
      * @param praiseVo
      */
     @Override
-    public void praise(praiseVo praiseVo) {
-        //1.文章表点赞数+1
+    public void praise(PraiseVo praiseVo) {
+        //1.article_praise增加关系
         Long articleId = praiseVo.getArticleId();
+        Long userId = ThreadLocalContext.getUserId();
+        //1.1如果已经有数据 则该点赞无效
+        LambdaQueryWrapper<ArticlePraise> articlePraiseLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        articlePraiseLambdaQueryWrapper.eq(ArticlePraise::getArticleId,articleId);
+        articlePraiseLambdaQueryWrapper.eq(ArticlePraise::getUserId, userId);
+        if(articlePraiseMapper.selectOne(articlePraiseLambdaQueryWrapper) != null){
+            //有数据
+            return;
+        }
+        articlePraiseMapper.save(articleId, userId);
+        //2.文章表点赞数+1
         articleMapper.praise(articleId);
-        //2.article_praise增加关系
-        articlePraiseMapper.save(articleId, praiseVo.getUserId());
         //3.文章作者的被点赞数加1
         LambdaQueryWrapper<Article> articleLambdaQueryWrapper = new LambdaQueryWrapper<>();
         articleLambdaQueryWrapper.eq(Article::getId,articleId);
-        List<Article> articles = articleMapper.selectList(articleLambdaQueryWrapper);
-        Article article = articles.get(0);
-        Long userId = article.getUserId();
-        userInfoMapper.incrementPraiseCountByuserId(userId);
+        Article article = articleMapper.selectOne(articleLambdaQueryWrapper);
+        Long authorId = article.getUserId();
+        userInfoMapper.incrementPraiseCountByuserId(authorId);
         //4.增加活跃度
-        if(praiseVo.getCommentId() != null){
+        if(praiseVo.getCommentId() != 0){
             //4.1给评论点赞
-            activityService.addPraiseActivity(articleId, userId,praiseVo.getCommentId());
+            activityService.addPraiseActivity(articleId, authorId,praiseVo.getCommentId());
         } else {
             //4.2给文章点赞
-            activityService.addPraiseActivity(articleId, userId,null);
+            activityService.addPraiseActivity(articleId, authorId,null);
         }
     }
 
@@ -179,7 +192,7 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
     public List<ArticleUserVo> getArticleUserCollectionByUserId() {
         //1.根据用户id查询用户收藏的文章的Id
         Long userId = ThreadLocalContext.getUserId();
-        List<Long> articleIdList = activityCollectionMapper.getArticleUserCollectionByUserId(userId);
+        List<Long> articleIdList = articleCollectionMapper.getArticleUserCollectionByUserId(userId);
         //2.根据文章id查询出文章
         List<ArticleUserVo> articleUserVoList = new ArrayList<>();
         for (Long articleId : articleIdList){
@@ -207,6 +220,42 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
             articleUserVoList.add(articleUserVoById);
         }
         return articleUserVoList;
+    }
+
+    /**
+     * 用户收藏文章
+     * @param articleCollection
+     */
+    @Override
+    public void collection(ArticleCollection articleCollection) {
+        //1.保存收藏信息
+        //1.1判断是否已经收藏了
+        Long userId = ThreadLocalContext.getUserId();
+        Long articleId = articleCollection.getArticleId();
+        LambdaQueryWrapper<ArticleCollection> articleCollectionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        articleCollectionLambdaQueryWrapper.eq(ArticleCollection::getArticleId,articleId);
+        articleCollectionLambdaQueryWrapper.eq(ArticleCollection::getUserId,userId);
+        if(articleCollectionMapper.selectOne(articleCollectionLambdaQueryWrapper) != null){
+            //已经收藏了
+            return;
+        }
+        articleCollection.setUserId(userId);
+        articleCollection.setCreateTime(LocalDateTime.now());
+        articleCollection.setUpdateTime(LocalDateTime.now());
+        articleCollectionMapper.insert(articleCollection);
+        //2.文章作者的被收藏数+1
+        Article article = articleMapper.selectById(articleId);
+        Long authorId = article.getUserId();
+        userInfoMapper.incrementCollectionCountByUserId(authorId);
+        //3.文章被收藏数加+1
+        article.setCollection(article.getCollection() + 1);
+        articleMapper.updateById(article);
+        //4.活跃度增加 +3分
+        ActivityVo activityVo = new ActivityVo();
+        activityVo.setArticleId(articleId);
+        activityVo.setUserId(userId);
+        activityVo.setStatusEnums(StatusEnums.COLLECTION);
+        rabbitTemplate.convertAndSend(RabbitmqConfig.ACTIVITY_DIRECT,RabbitmqConfig.ACTIVITY_BINGING,activityVo);
     }
 
     /**
