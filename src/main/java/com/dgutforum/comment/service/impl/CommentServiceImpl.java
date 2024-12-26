@@ -28,7 +28,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
 
     @Override
-    public ResVo<List<CommentVo>> list(CommentListReq commentListReq) {
+    public List<CommentVo> list(CommentListReq commentListReq) {
         //1.根据文章id查询评价 查询全部 按照评论更新时间排序
         List<CommentVo> list = commentUserInfoMapper.queryCommentByArticleId(commentListReq.getArticleId());
 //        List<CommentVo> commentVoList = new ArrayList<>(list.size());
@@ -37,7 +37,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 //            CommentVo commentVo = new CommentVo();
 //            BeanUtil.copyProperties(commentVo,commentDto);
 //        }
-        return ResVo.ok(list);
+        return list;
     }
 
 //    /**

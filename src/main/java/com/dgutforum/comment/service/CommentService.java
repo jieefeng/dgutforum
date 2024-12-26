@@ -12,6 +12,6 @@ public interface CommentService extends IService<Comment> {
 
 //    ResVo<List<Comment>> getCommentsByArticleId(Long articleId);
 
-    ResVo<List<CommentVo>> list(CommentListReq commentListReq);
+    List<CommentVo> list(CommentListReq commentListReq);
 
 }

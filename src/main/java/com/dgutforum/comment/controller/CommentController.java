@@ -11,6 +11,7 @@ import com.dgutforum.comment.entity.Comment;
 import com.dgutforum.comment.service.CommentService;
 import com.dgutforum.comment.req.CommentSaveReq;
 
+import com.dgutforum.common.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -38,12 +39,12 @@ public class CommentController {
      */
     @PostMapping(path = "save")
     @Operation(summary = "保存评论")
-    public ResVo save(@RequestBody CommentSaveReq req) {
+    public Result save(@RequestBody CommentSaveReq req) {
         Comment comment = CommentConverter.toComment(req, req.getUserId());
         if(commentService.save(comment)){
-            return ResVo.ok(null);
+            return Result.success();
         } else {
-            return ResVo.fail(COMMENT_NOT_EXISTS);
+            return Result.error("评论不存在");
         }
     }
 
@@ -54,8 +55,8 @@ public class CommentController {
      */
     @DeleteMapping("/{id}")
     @Operation(summary = "删除评论")
-    public ResVo<Boolean> deleteComment(@PathVariable Long id) {
-        return ResVo.ok(commentService.removeById(id));
+    public Result deleteComment(@PathVariable Long id) {
+        return Result.success(commentService.removeById(id));
     }
 
     /**
@@ -65,12 +66,12 @@ public class CommentController {
      */
     @PutMapping
     @Operation(summary = "更新评论")
-    public ResVo<Boolean> updateComment(@RequestBody CommentReq commentReq) {
+    public Result updateComment(@RequestBody CommentReq commentReq) {
 
         Comment comment = new Comment();
         BeanUtil.copyProperties(comment,commentReq);
         comment.setUpdateTime(LocalDateTime.now());
-        return ResVo.ok(commentService.updateById(comment));
+        return Result.success(commentService.updateById(comment));
     }
 
     /**
@@ -80,8 +81,8 @@ public class CommentController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "查询单条评论")
-    public ResVo<Comment> getComment(@PathVariable Long id) {
-        return ResVo.ok(commentService.getById(id));
+    public Result getComment(@PathVariable Long id) {
+        return Result.success(commentService.getById(id));
     }
 
 //    @GetMapping("/article/{articleId}")
@@ -96,7 +97,7 @@ public class CommentController {
      */
     @PostMapping(path = "list")
     @Operation(summary = "根据文章id查询评价")
-    public ResVo<List<CommentVo>> list(@RequestBody CommentListReq commentListReq){
-      return commentService.list(commentListReq);
+    public Result list(@RequestBody CommentListReq commentListReq){
+      return Result.success(commentService.list(commentListReq));
     }
 }
