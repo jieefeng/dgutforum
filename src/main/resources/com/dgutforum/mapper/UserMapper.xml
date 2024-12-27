@@ -30,8 +30,8 @@
         where id = #{id}
     </update>
 
-    <select id="id_select" parameterType="java.util.List" resultType="com.dgutforum.user.pojo.UserVo">
-        select username,photo
+    <select id="id_select" parameterType="java.util.List" resultType="com.dgutforum.user.pojo.FollowVo">
+        select username,photo,id
         from user
         where id in
         <foreach collection="list" item="id" separator="," open="(" close=")">

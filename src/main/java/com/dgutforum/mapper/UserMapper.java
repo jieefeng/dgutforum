@@ -1,8 +1,6 @@
 package com.dgutforum.mapper;
 
-import com.dgutforum.user.pojo.Follow;
-import com.dgutforum.user.pojo.User;
-import com.dgutforum.user.pojo.UserVo;
+import com.dgutforum.user.pojo.*;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -38,13 +36,19 @@ public interface UserMapper {
     void follow_del(Follow follow);
 
 
-    @Select("select user_id from user_relation where follow_user_id = #{followUserId}")
-    List<Integer> follow_select(Follow follow);
+    @Select("select follow_user_id from user_relation where user_id = #{id}")
+    List<Integer> follow_select(long id);
 
 
-    List<UserVo> id_select(List<Integer> list);
+    List<FollowVo> id_select(List<Integer> list);
 
     @Insert("insert into user_info(user_id) " +
             "values(#{userId})")
     void registerUserInfo(Long userId);
+
+    @Select("select * from user_info where user_id = #{id}")
+    UserInfo getUserInfoByUserId(long id);
+
+    @Select("select user_id from user_relation where follow_user_id = #{id}")
+    List<Integer> follower_select(long id);
 }

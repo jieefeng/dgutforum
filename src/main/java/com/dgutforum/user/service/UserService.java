@@ -1,8 +1,6 @@
 package com.dgutforum.user.service;
 
-import com.dgutforum.user.pojo.Follow;
-import com.dgutforum.user.pojo.User;
-import com.dgutforum.user.pojo.UserVo;
+import com.dgutforum.user.pojo.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +21,11 @@ public interface UserService {
 
     UserVo get(long id);
 
-    List<UserVo> follow_select(Follow follow);
+    List<FollowVo> follower_select(long id);
 
     void registerUserInfo(Long userId);
+
+    UserInfoVo getUserInfoByUserId(long id);
+
+    List<FollowVo> follow_select(long id);
 }

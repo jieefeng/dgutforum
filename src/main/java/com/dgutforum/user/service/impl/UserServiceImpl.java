@@ -1,9 +1,7 @@
 package com.dgutforum.user.service.impl;
 
 import com.dgutforum.mapper.UserMapper;
-import com.dgutforum.user.pojo.Follow;
-import com.dgutforum.user.pojo.User;
-import com.dgutforum.user.pojo.UserVo;
+import com.dgutforum.user.pojo.*;
 import com.dgutforum.user.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,22 +84,44 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserVo> follow_select(Follow follow) {
+    public List<FollowVo> follower_select(long id) {
 
-        List<Integer> list = userMapper.follow_select(follow);
+        List<Integer> list = userMapper.follower_select(id);
 
         if(list.size() == 0){
             return null;
         }
 
-        List<UserVo> e = userMapper.id_select(list);
+        List<FollowVo> followVoList = userMapper.id_select(list);
 
-        return e;
+        return followVoList;
     }
 
     @Override
     public void registerUserInfo(Long userId) {
         userMapper.registerUserInfo(userId);
+    }
+
+    @Override
+    public UserInfoVo getUserInfoByUserId(long id) {
+        UserInfo userInfo = userMapper.getUserInfoByUserId(id);
+        UserInfoVo userInfoVo = new UserInfoVo();
+        BeanUtils.copyProperties(userInfo,userInfoVo);
+
+        return userInfoVo;
+    }
+
+    @Override
+    public List<FollowVo> follow_select(long id) {
+        List<Integer> list = userMapper.follow_select(id);
+
+        if(list.size() == 0){
+            return null;
+        }
+
+        List<FollowVo> followVoList = userMapper.id_select(list);
+
+        return followVoList;
     }
 
 

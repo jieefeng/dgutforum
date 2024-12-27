@@ -13,7 +13,7 @@ public class Follow {
 
     private Long id;
     private Long userId;
-    private Long followUserId;
+    private Long followUserId; //关注的人
     private LocalDateTime createTime; //创建时间
     private LocalDateTime updateTime;
 }

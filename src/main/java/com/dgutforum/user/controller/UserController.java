@@ -2,9 +2,7 @@ package com.dgutforum.user.controller;
 
 import com.dgutforum.common.result.ResVo;
 import com.dgutforum.common.result.Result;
-import com.dgutforum.user.pojo.Follow;
-import com.dgutforum.user.pojo.User;
-import com.dgutforum.user.pojo.UserVo;
+import com.dgutforum.user.pojo.*;
 import com.dgutforum.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,7 @@ public class UserController {
 
 
     /**
-     * 回显界面
+     * 获取用户基本信息
      */
     @GetMapping("/{id}")
     public Result get(@PathVariable long id){
@@ -34,6 +32,10 @@ public class UserController {
         return Result.success(userVo);
     }
 
+
+     /**
+     修改用户信息
+     */
     @PutMapping()
     public Result update(@RequestBody User user){
         log.info("user information:{}", user);
@@ -46,27 +48,62 @@ public class UserController {
         return Result.success();
     }
 
-
+    /*
+    添加关注
+     */
     @PostMapping("/follow/add")
-    public ResVo follow_add(@RequestBody Follow follow){
+    public Result follow_add(@RequestBody Follow follow){
         log.info("添加的关注follow:{}", follow);
 
         userService.follow_add(follow);
 
-        return ResVo.ok(null);
+        return Result.success();
     }
+
+    /**
+    * 取消关注
+    * */
     @PostMapping("/follow/del")
-    public ResVo follow_del(@RequestBody Follow follow){
+    public Result follow_del(@RequestBody Follow follow){
         log.info("删除的关注follow:{}", follow);
 
         userService.follow_del(follow);
 
-        return ResVo.ok(null);
+        return Result.success();
     }
-    @PostMapping("/follow")
-    public ResVo<List<UserVo>> follow_select(@RequestBody Follow follow){
-        log.info("查询的人的id:{}", follow);
-        List<UserVo> e = userService.follow_select(follow);
-        return ResVo.ok(e);
+
+    /**
+    *   粉丝列表
+    * */
+    @GetMapping("/follower/{id}")
+    public Result follower_select(@PathVariable long id){
+        log.info("查询的人的id:{}", id);
+
+        List<FollowVo> followVoList = userService.follower_select(id);
+
+        return Result.success(followVoList);
     }
+
+    /**
+     *   关注列表
+     * */
+    @GetMapping("/follow/{id}")
+    public Result follow_select(@PathVariable long id){
+        log.info("查询的人的id:{}", id);
+        List<FollowVo> followVoList = userService.follow_select(id);
+        return Result.success(followVoList);
+    }
+
+    /*
+    * 获取用户文章统计信息
+    * */
+    @GetMapping("/info/{id}")
+    public Result getUserInfo(@PathVariable long id){
+        log.info("查询的人的id:{}", id);
+
+        UserInfoVo userInfoVo = userService.getUserInfoByUserId(id);
+
+        return Result.success(userInfoVo);
+    }
+
 }
