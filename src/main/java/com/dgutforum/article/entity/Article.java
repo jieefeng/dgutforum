@@ -47,4 +47,7 @@ public class Article extends BaseDO {
      */
     private Long categoryId;
 
+    private Long praise;
+
+    private Long collection;
 }

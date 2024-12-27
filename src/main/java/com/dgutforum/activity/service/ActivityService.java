@@ -32,6 +32,8 @@ public class ActivityService {
         activityVo.setStatusEnums(StatusEnums.READ);
         activityVo.setArticleId(articleId);
         activityVo.setUserId(userId);
-        rabbitTemplate.convertAndSend(RabbitmqConfig.ACTIVITY_DIRECT,RabbitmqConfig.ACTIVITY_BINGING);
+        rabbitTemplate.convertAndSend(RabbitmqConfig.ACTIVITY_DIRECT,RabbitmqConfig.ACTIVITY_BINGING,activityVo);
     }
+
+
 }

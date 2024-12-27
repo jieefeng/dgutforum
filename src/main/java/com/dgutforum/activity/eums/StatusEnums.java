@@ -4,5 +4,6 @@ public enum StatusEnums {
     COMMENT,
     PUBLISH,
     READ,
+    COLLECTION
 }
 
