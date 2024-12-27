@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @SpringBootApplication
 @CrossOrigin(origins = "http://localhost:5173")
 public class DgutforumApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(DgutforumApplication.class, args);
     }

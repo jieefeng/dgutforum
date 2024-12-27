@@ -1,6 +1,7 @@
 package com.dgutforum.article.vo;
 
 import com.dgutforum.common.dto.BaseDO;
+import jdk.jfr.Category;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,11 @@ public class ArticleUserVo extends BaseDO {
      * 帖子正文
      */
     private String content;
+
+    /**
+     * 帖子头图
+     */
+    private String picture;
 
     /**
      * 点赞数
@@ -50,5 +56,8 @@ public class ArticleUserVo extends BaseDO {
      */
     private String photo;
 
-
+    /**
+     * 分类Id
+     */
+    private String CategoryId;
 }
