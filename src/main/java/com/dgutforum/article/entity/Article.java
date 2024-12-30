@@ -60,7 +60,7 @@ public class Article extends BaseDO {
     /**
      * 阅读计数
      */
-    private Long read_count;
+    private Long readCount;
 
     /**
      * 摘要
