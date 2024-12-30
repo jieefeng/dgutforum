@@ -41,6 +41,12 @@ public class ArticleUserVo extends BaseDO {
      */
     private String collection;
 
+
+    /**
+     * 阅读计数
+     */
+    private Long readCount;
+
     /**
      * 作者
      */
@@ -60,4 +66,10 @@ public class ArticleUserVo extends BaseDO {
      * 分类Id
      */
     private String CategoryId;
+
+
+    /**
+     * 摘要
+     */
+    private String summary;
 }

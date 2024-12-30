@@ -47,7 +47,23 @@ public class Article extends BaseDO {
      */
     private Long categoryId;
 
+    /**
+     * 点赞
+     */
     private Long praise;
 
+    /**
+     * 收藏
+     */
     private Long collection;
+
+    /**
+     * 阅读计数
+     */
+    private Long read_count;
+
+    /**
+     * 摘要
+     */
+    private String summary;
 }

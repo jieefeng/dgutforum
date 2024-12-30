@@ -20,7 +20,6 @@ import com.dgutforum.context.ThreadLocalContext;
 import com.dgutforum.image.service.ImageService;
 import com.dgutforum.mapper.*;
 import com.dgutforum.article.service.ArticleWriteService;
-import com.dgutforum.article.req.ArticlePostReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -92,9 +91,6 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
         //3.查询文章点赞数
         Long praiseNumber = articlePraiseMapper.getArticlePraiseByArticleId(articleId);
         articleUserVo.setPraise(praiseNumber);
-        //4.增加用户阅读文章数
-        Long userId = ThreadLocalContext.getUserId();
-        userInfoMapper.incrementReadCountByuserId(userId);
         return articleUserVo;
     }
 
@@ -265,7 +261,7 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
      * @return
      */
     @Override
-    public ArticleUserVo saveArticle(ArticlePostReq req, Long author) {
+    public ArticleUserVo saveArticle(Article req, Long author) {
         //请请求体转为数据库实体
         Article article = ArticleConverter.toArticle(req, author);
         //将图片转为url链接
@@ -276,7 +272,7 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
             @Override
             public ArticleUserVo doInTransaction(TransactionStatus status) {
                 Long articleId;
-                if (NumUtil.nullOrZero(req.getArticleId())) {
+                if (NumUtil.nullOrZero(req.getId())) {
                     //1.增加发布文章数
                     userInfoMapper.incrementPublishCount(req.getUserId());
                     //2.保存文章

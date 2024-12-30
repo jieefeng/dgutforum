@@ -12,14 +12,14 @@ public class ArticleUserDto extends BaseDO {
     private Long userId;
 
     /**
-     * 帖子标题
+     * 用户名
      */
-    private String title;
+    private String username;
 
     /**
-     * 帖子头图
+     * 用户头像
      */
-    private String picture;
+    private String photo;
 
     /**
      * 类目ID
@@ -27,14 +27,29 @@ public class ArticleUserDto extends BaseDO {
     private Long categoryId;
 
     /**
+     * 帖子头图
+     */
+    private String picture;
+
+    /**
+     * 摘要
+     */
+    private String summary;
+
+    /**
+     * 帖子标题
+     */
+    private String title;
+
+    /**
      * 帖子正文
      */
     private String content;
 
     /**
-     * 是否删除
+     * 评论数
      */
-    private short deleted;
+    private String commentNumber;
 
     /**
      * 点赞数
@@ -47,13 +62,12 @@ public class ArticleUserDto extends BaseDO {
     private Long collection;
 
     /**
-     * 用户名
+     * 阅读计数
      */
-    private String username;
+    private Long read_count;
 
     /**
-     * 用户头像
+     * 是否删除
      */
-    private String photo;
-
+    private short deleted;
 }

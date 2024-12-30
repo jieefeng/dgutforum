@@ -3,7 +3,6 @@ package com.dgutforum.article.converter;
 
 
 import com.dgutforum.article.entity.Article;
-import com.dgutforum.article.req.ArticlePostReq;
 
 /**
  * 文章转换
@@ -11,13 +10,13 @@ import com.dgutforum.article.req.ArticlePostReq;
  */
 public class ArticleConverter {
 
-    public static Article toArticle(ArticlePostReq req, Long author) {
+    public static Article toArticle(Article req, Long author) {
         Article article = new Article();
         // 设置作者ID
         article.setUserId(author);
-        article.setId(req.getArticleId());
+        article.setId(req.getId());
         article.setTitle(req.getTitle());
-        article.setPicture(req.getCover() == null ? "" : req.getCover());
+        article.setPicture(req.getPicture() == null ? "" : req.getPicture());
         article.setCategoryId(req.getCategoryId());
         article.setDeleted((short) 0);
         article.setContent(req.getContent());

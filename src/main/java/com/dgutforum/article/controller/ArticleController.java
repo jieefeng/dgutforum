@@ -15,6 +15,7 @@ import com.dgutforum.context.ThreadLocalContext;
 import com.dgutforum.mapper.ArticleCollectionMapper;
 import com.dgutforum.mapper.ArticleMapper;
 import com.dgutforum.mapper.ReadHistoryMapper;
+import com.dgutforum.mapper.UserInfoMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ public class ArticleController {
     private final RabbitTemplate rabbitTemplate;
     private final ActivityService activityService;
     private final ArticleCollectionMapper articleCollectionMapper;
+    private final UserInfoMapper userInfoMapper;
 
     /**
      * 查询全部文章
@@ -57,9 +59,9 @@ public class ArticleController {
      */
     @PostMapping(path = "save")
     @Operation(summary = "发布文章，完成后返回文章")
-    public Result post(@RequestBody ArticlePostReq req) throws IOException {
-        log.info("发布文章:{}",req);
-        ArticleUserVo articleUserVo = articleWriteService.saveArticle(req, req.getUserId());
+    public Result post(@RequestBody Article article) throws IOException {
+        log.info("发布文章:{}",article);
+        ArticleUserVo articleUserVo = articleWriteService.saveArticle(article, article.getUserId());
         return Result.success(articleUserVo);
     }
 
@@ -89,6 +91,13 @@ public class ArticleController {
         activityService.addReadActivity(articleId, userId);
         //3.查询文章
         ArticleUserVo articleUserVoById = articleWriteService.getArticleUserVoById(articleId);
+        //4.增加文章阅读数 +1
+        Article article = new Article();
+        article.setId(articleUserVoById.getId());
+        article.setRead_count(articleUserVoById.getReadCount() + 1);
+        articleMapper.updateById(article);
+        //5.增加用户阅读文章数
+        userInfoMapper.incrementReadCountByuserId(userId);
         return Result.success(articleUserVoById);
     }
 

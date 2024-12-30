@@ -6,7 +6,6 @@ import com.dgutforum.article.entity.ArticleCollection;
 import com.dgutforum.article.vo.PraiseVo;
 import com.dgutforum.article.vo.ArticleUserVo;
 import com.dgutforum.article.entity.Article;
-import com.dgutforum.article.req.ArticlePostReq;
 import com.dgutforum.article.vo.BrowseHistoryVo;
 
 import java.util.List;
@@ -20,7 +19,7 @@ public interface ArticleWriteService extends IService<Article> {
      * @param author 作者
      * @return 返回文章主键
      */
-    ArticleUserVo saveArticle(ArticlePostReq req, Long author);
+    ArticleUserVo saveArticle(Article req, Long author);
 
     /**
      * 删除文章
