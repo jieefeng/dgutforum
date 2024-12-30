@@ -94,7 +94,7 @@ public class ArticleController {
         //4.增加文章阅读数 +1
         Article article = new Article();
         article.setId(articleUserVoById.getId());
-        article.setRead_count(articleUserVoById.getReadCount() + 1);
+        article.setReadCount(articleUserVoById.getReadCount() + 1);
         articleMapper.updateById(article);
         //5.增加用户阅读文章数
         userInfoMapper.incrementReadCountByuserId(userId);
