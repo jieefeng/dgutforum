@@ -1,17 +1,13 @@
 package com.dgutforum.comment.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dgutforum.comment.dto.CommentDto;
+import com.dgutforum.comment.vo.CommentChildVo;
 import com.dgutforum.comment.vo.CommentVo;
 import com.dgutforum.mapper.CommentUserInfoMapper;
-import com.dgutforum.comment.req.CommentListReq;
-import com.dgutforum.common.result.ResVo;
 import com.dgutforum.comment.entity.Comment;
 import com.dgutforum.mapper.CommentMapper;
 import com.dgutforum.comment.service.CommentService;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,15 +24,21 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
 
     @Override
-    public List<CommentVo> list(CommentListReq commentListReq) {
-        //1.根据文章id查询评价 查询全部 按照评论更新时间排序
-        List<CommentVo> list = commentUserInfoMapper.queryCommentByArticleId(commentListReq.getArticleId());
+    public List<CommentVo> list(Long articleId) {
+        //1.根据文章id查询文章的父评论 按照评论更新时间排序
+        List<CommentVo> list = commentUserInfoMapper.queryTopCommentByArticleId(articleId);
 //        List<CommentVo> commentVoList = new ArrayList<>(list.size());
 //        //2.根据文章id和父评论id查询所有子评论   并且根据更新时间排序
 //        for(CommentDto commentDto : list){
 //            CommentVo commentVo = new CommentVo();
 //            BeanUtil.copyProperties(commentVo,commentDto);
 //        }
+        //2.筛选所有父评论
+        List<CommentChildVo> commentChildVos = new ArrayList<>();
+        for (CommentVo commentVo : list){
+            List<CommentChildVo> commentChildVoList = commentUserInfoMapper.queryChildrenComment(commentVo.getArticleId(), commentVo.getId());
+            commentVo.setCommentChildVoList(commentChildVoList);
+        }
         return list;
     }
 

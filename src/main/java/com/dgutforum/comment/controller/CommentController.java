@@ -92,12 +92,12 @@ public class CommentController {
 
     /**
      * 根据文章id查询评价
-     * @param commentListReq
+     * @param articleId
      * @return
      */
-    @PostMapping(path = "list")
+    @GetMapping("/list/{articleId}")
     @Operation(summary = "根据文章id查询评价")
-    public Result list(@RequestBody CommentListReq commentListReq){
-      return Result.success(commentService.list(commentListReq));
+    public Result list(@PathVariable Long articleId){
+      return Result.success(commentService.list(articleId));
     }
 }

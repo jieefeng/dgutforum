@@ -87,10 +87,11 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
         //2.查询文章评论数
         QueryWrapper queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("article_id", articleUserVo.getId());
-        articleUserVo.setCommentNumber(commentMapper.selectCount(queryWrapper));
+        Long commentNumber = commentMapper.selectCount(queryWrapper);
+        articleUserVo.setCommentNumber(commentNumber != null ? commentNumber : 0);
         //3.查询文章点赞数
         Long praiseNumber = articlePraiseMapper.getArticlePraiseByArticleId(articleId);
-        articleUserVo.setPraise(praiseNumber);
+        articleUserVo.setPraise(praiseNumber != null ? praiseNumber : 0);
         return articleUserVo;
     }
 

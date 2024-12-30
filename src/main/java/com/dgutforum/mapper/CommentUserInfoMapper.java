@@ -2,6 +2,7 @@ package com.dgutforum.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.dgutforum.comment.dto.CommentDto;
+import com.dgutforum.comment.vo.CommentChildVo;
 import com.dgutforum.comment.vo.CommentVo;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
@@ -14,7 +15,7 @@ public abstract interface CommentUserInfoMapper extends BaseMapper<com.dgutforum
 
 
 
-    @Select("select c.id, c.article_id, c.user_id, c.content, c.top_comment_id, c.parent_comment_id, c.praise, c.create_time, c.update_time," +
+    @Select("select c.id, c.article_id, c.user_id, c.content, c.top_comment_id, c.top_comment_id, c.praise, c.create_time, c.update_time," +
             "ui.username,ui.photo " +
             "from comment c " +
             "left join user ui on c.user_id = ui.id " +
@@ -22,13 +23,13 @@ public abstract interface CommentUserInfoMapper extends BaseMapper<com.dgutforum
             "order by c.update_time")
     Page<com.dgutforum.comment.dto.CommentDto> list (Long articleId);
 
-    @Select("select c.id, c.article_id, c.user_id, c.content, c.top_comment_id, c.parent_comment_id, c.praise, c.create_time, c.update_time," +
+    @Select("select c.id, c.article_id, c.user_id, c.content, c.top_comment_id, c.top_comment_id, c.praise, c.create_time, c.update_time," +
             "ui.username,ui.photo " +
             "from comment c " +
             "left join user ui on c.user_id = ui.id " +
-            "where c.article_id = #{articleId} and c.deleted = 0 and c.parent_comment_id = #{parentCommentId} " +
+            "where c.article_id = #{articleId} and c.deleted = 0 and c.top_comment_id = #{parentCommentId} " +
             "order by c.update_time")
-    List<CommentDto> queryChildrenComment(Long articleId, Long parentCommentId);
+    List<CommentChildVo> queryChildrenComment(Long articleId, Long parentCommentId);
 
 
     /**
@@ -41,9 +42,9 @@ public abstract interface CommentUserInfoMapper extends BaseMapper<com.dgutforum
             "ui.username,ui.photo " +
             "from comment c " +
             "left join user ui on c.user_id = ui.id " +
-            "where c.article_id = #{articleId} and c.deleted = 0 " +
+            "where c.article_id = #{articleId} and c.deleted = 0 and c.top_comment_id = -1 " +
             "order by c.update_time")
-    List<CommentVo> queryCommentByArticleId(Long articleId);
+    List<CommentVo> queryTopCommentByArticleId(Long articleId);
 }
 
 
