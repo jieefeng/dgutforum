@@ -29,7 +29,7 @@ public class ActivityListener {
 //    private final RedisTemplate<String,String> redisTemplate;
     private final StringRedisTemplate stringRedisTemplate;
 
-    private static final String ACTIVITY_PREFIX = "dgutforum:activity:rank";
+    public static final String ACTIVITY_PREFIX = "dgutforum:activity:rank";
     private static final String PRAISE_ARTICLE_FIELD_PREFIX = "praise/article";
     private static final String PRAISE_COMMENT_FIELD_PREFIX = "praise/comment";
     private static final String READ_FIELD_PREFIX = "read/acticle";

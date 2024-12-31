@@ -49,6 +49,23 @@ public class imageController {
         return Result.success(imageVo);
     }
 
+    @PostMapping("/uploadJieefeng")
+    public Result uploadImageJF(@RequestParam("file") MultipartFile file) {
+        log.info("文件上传,file={}", file);
+
+        try {
+            String originalFilename = file.getOriginalFilename();
+            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            String objectName = UUID.randomUUID().toString() + extension;
+
+            String filepath = imageService.saveImage(file);
+            return Result.success(filepath);
+        } catch (IOException e) {
+            log.error("文件上传失败：{}",e);
+            throw new RuntimeException(e);
+        }
+    }
+
     @PostMapping("/upload")
     public Result uploadImage(@RequestParam("file") MultipartFile file) {
         log.info("文件上传,file={}", file);

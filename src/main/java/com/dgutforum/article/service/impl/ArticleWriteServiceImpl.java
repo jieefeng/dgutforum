@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dgutforum.activity.eums.StatusEnums;
-import com.dgutforum.activity.service.ActivityService;
+import com.dgutforum.activity.service.impl.ActivityServiceImpl;
 import com.dgutforum.activity.vo.ActivityVo;
 import com.dgutforum.article.entity.ArticleCollection;
 import com.dgutforum.article.entity.ArticlePraise;
@@ -48,7 +48,7 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
     private final ArticleCollectionMapper articleCollectionMapper;
     private final ReadHistoryMapper readHistoryMapper;
     private final RabbitTemplate rabbitTemplate;
-    private final ActivityService activityService;
+    private final ActivityServiceImpl activityServiceImpl;
 
 
     /**
@@ -153,10 +153,10 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
         //4.增加活跃度
         if(praiseVo.getCommentId() != 0){
             //4.1给评论点赞
-            activityService.addPraiseActivity(articleId, authorId,praiseVo.getCommentId());
+            activityServiceImpl.addPraiseActivity(articleId, authorId,praiseVo.getCommentId());
         } else {
             //4.2给文章点赞
-            activityService.addPraiseActivity(articleId, authorId,null);
+            activityServiceImpl.addPraiseActivity(articleId, authorId,null);
         }
     }
 

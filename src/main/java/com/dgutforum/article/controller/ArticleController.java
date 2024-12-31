@@ -1,6 +1,6 @@
 package com.dgutforum.article.controller;
 
-import com.dgutforum.activity.service.ActivityService;
+import com.dgutforum.activity.service.impl.ActivityServiceImpl;
 import com.dgutforum.article.entity.ArticleCollection;
 import com.dgutforum.article.entity.ReadHistory;
 import com.dgutforum.article.vo.PraiseVo;
@@ -9,7 +9,6 @@ import com.dgutforum.article.vo.ArticleUserVo;
 import com.dgutforum.article.entity.Article;
 import com.dgutforum.article.vo.BrowseHistoryVo;
 import com.dgutforum.article.service.ArticleWriteService;
-import com.dgutforum.article.req.ArticlePostReq;
 import com.dgutforum.common.result.Result;
 import com.dgutforum.context.ThreadLocalContext;
 import com.dgutforum.mapper.ArticleCollectionMapper;
@@ -38,7 +37,7 @@ public class ArticleController {
     private final ArticleMapper articleMapper;
     private final ReadHistoryMapper readHistoryMapper;
     private final RabbitTemplate rabbitTemplate;
-    private final ActivityService activityService;
+    private final ActivityServiceImpl activityServiceImpl;
     private final ArticleCollectionMapper articleCollectionMapper;
     private final UserInfoMapper userInfoMapper;
 
@@ -88,7 +87,7 @@ public class ArticleController {
             readHistoryMapper.insert(readHistory);
         }
         //2.增加活跃度
-        activityService.addReadActivity(articleId, userId);
+        activityServiceImpl.addReadActivity(articleId, userId);
         //3.查询文章
         ArticleUserVo articleUserVoById = articleWriteService.getArticleUserVoById(articleId);
         //4.增加文章阅读数 +1

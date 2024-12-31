@@ -5,6 +5,9 @@ import com.dgutforum.image.service.ImageService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.Base64;
 
 @Service
@@ -97,6 +100,14 @@ public class ImageServiceImpl implements ImageService {
         String fileType = detectImageType(imageBytes);
         // 保存图片到alioss
         String filePath = imageUploader.upload(imageBytes, fileType);
+        return filePath;
+    }
+
+    public String saveImage(MultipartFile file) throws IOException {
+        byte[] bytes = file.getBytes();
+        String contentType = file.getContentType();
+        String substring = contentType.substring(6);
+        String filePath = imageUploader.upload(bytes, substring);
         return filePath;
     }
 }
