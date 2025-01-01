@@ -110,7 +110,8 @@ public class ArticleController {
     @GetMapping("/category/{categoryId}")
     @Operation(summary = "根据分类id查询文章")
     public Result getByCategoryId(@PathVariable Long categoryId){
-        return Result.success(articleWriteService.getByCategoryId(categoryId));
+        List<ArticleUserVo> byCategoryId = articleWriteService.getByCategoryId(categoryId);
+        return Result.success(byCategoryId);
     }
 
 //    /**

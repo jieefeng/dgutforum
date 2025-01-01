@@ -12,6 +12,7 @@ import com.dgutforum.comment.service.CommentService;
 import com.dgutforum.comment.req.CommentSaveReq;
 
 import com.dgutforum.common.result.Result;
+import com.dgutforum.context.ThreadLocalContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -40,7 +41,7 @@ public class CommentController {
     @PostMapping(path = "save")
     @Operation(summary = "保存评论")
     public Result save(@RequestBody CommentSaveReq req) {
-        Comment comment = CommentConverter.toComment(req, req.getUserId());
+        Comment comment = CommentConverter.toComment(req, ThreadLocalContext.getUserId());
         if(commentService.save(comment)){
             return Result.success();
         } else {
