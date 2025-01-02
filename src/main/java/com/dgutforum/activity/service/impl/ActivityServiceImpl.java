@@ -7,14 +7,11 @@ import com.dgutforum.activity.service.ActivityService;
 import com.dgutforum.activity.vo.ActivityDto;
 import com.dgutforum.activity.vo.ActivityVo;
 import com.dgutforum.config.RabbitmqConfig;
-import com.dgutforum.context.ThreadLocalContext;
 import com.dgutforum.mapper.ArticlePraiseMapper;
 import com.dgutforum.mapper.CommentPraiseMapper;
 import com.dgutforum.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.ThreadContext;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
@@ -64,7 +61,7 @@ public class ActivityServiceImpl implements ActivityService {
         if (typedTuples != null) {
             for (ZSetOperations.TypedTuple<String> tuple : typedTuples) {
                 ActivityDto dto = new ActivityDto();
-                long userId = Long.parseLong(tuple.getValue());
+                Long userId = Long.parseLong(tuple.getValue());
                 dto.setUserId(userId);  // 假设tuple的value是userId的字符串表示
                 dto.setUserName(userMapper.get(userId).getUsername());  // 你可以根据 userId 获取 userName，这里是一个示例方法
                 dto.setScore(tuple.getScore().intValue());  // 将score转换为Integer类型
@@ -92,6 +89,18 @@ public class ActivityServiceImpl implements ActivityService {
         }
 
         return activityDtos;
+    }
+
+    @Override
+    public void cancelPraiseActivity(Long articleId, Long userId, Long commentId) {
+        ActivityVo activityVo = new ActivityVo();
+        if(commentId != null){
+            activityVo.setCommentId(commentId);
+        }
+        activityVo.setStatusEnums(StatusEnums.DECREASE_PRAISE);
+        activityVo.setArticleId(articleId);
+        activityVo.setUserId(userId);
+        rabbitTemplate.convertAndSend(RabbitmqConfig.ACTIVITY_DIRECT,RabbitmqConfig.ACTIVITY_BINGING,activityVo);
     }
 }
 

@@ -18,4 +18,8 @@ public interface ArticleMapper extends BaseMapper<Article> {
             "where id = #{articleId}")
     void praise(Long articleId);
 
+    @Update("update article " +
+            "set praise = praise - 1 " +
+            "where id = #{articleId}")
+    void cancelPraise(Long articleId);
 }

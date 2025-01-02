@@ -4,6 +4,7 @@ public enum StatusEnums {
     COMMENT,
     PUBLISH,
     READ,
-    COLLECTION
+    DECREASE_PRAISE,
+    DECREASE_COLLECTION, COLLECTION
 }
 

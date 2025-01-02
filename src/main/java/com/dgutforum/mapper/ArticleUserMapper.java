@@ -54,6 +54,12 @@ public interface ArticleUserMapper {
             "left join user ui on a.user_id = ui.id " +
             "where a.category_id = cy.id and acol.user_id = #{userId} and a.deleted = 0 ")
     List<ArticleUserVo> getCollectionByUserId(long id);
+
+    @Select("select a.*, ui.username, ui.photo, cy.category_name " +
+            "from article a left join user ui on a.user_id = ui.id " +
+            "left join category cy on a.category_id = cy.id " +
+            "where a.title like concat('%', #{key}, '%')")
+    List<ArticleUserVo> searchByKey(String key);
 }
 
 

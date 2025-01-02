@@ -20,4 +20,6 @@ public interface ActivityService {
      * @return
      */
     List<ActivityDto> getMonthRank(LocalDateTime month);
+
+    void cancelPraiseActivity(Long articleId, Long userId, Long commentId);
 }

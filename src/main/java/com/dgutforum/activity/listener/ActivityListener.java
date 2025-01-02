@@ -4,7 +4,6 @@ import com.dgutforum.activity.vo.ActivityVo;
 import com.dgutforum.config.RabbitmqConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -60,7 +59,49 @@ public class ActivityListener {
                 String field = COLLECTION_FILED_PREFIX + "/" + activityVo.getArticleId();
                 addActivity(activityVo,field,3);
             }
+            case DECREASE_PRAISE -> {
+                String field = null;
+                if(activityVo.getCommentId() != null){
+                    //说明是评论
+                    field = PRAISE_COMMENT_FIELD_PREFIX
+                            + "/"
+                            + activityVo.getCommentId();
+                }else {
+                    //说明是文章
+                    field = PRAISE_ARTICLE_FIELD_PREFIX + "/" + activityVo.getArticleId();
+                }
+                decreaseActivity(activityVo,field,-2);
+            }
+            case DECREASE_COLLECTION -> {
+                String field = COLLECTION_FILED_PREFIX + "/" + activityVo.getArticleId();
+                decreaseActivity(activityVo,field,-3);
+            }
         }
+    }
+
+    private void decreaseActivity(ActivityVo activityVo, String field,Integer score) {
+        Long userId = activityVo.getUserId();
+        String userActionKey = ACTIVITY_PREFIX
+                + ":"
+                + userId + ":" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        Object value = stringRedisTemplate.opsForHash().get(userActionKey, field);
+        if(value == null){
+            //1.如果当天无加分记录 无需减少活跃
+        } else {
+            //2.说明当天有加分记录 需要减少活跃度
+            doDecreaseActivity(userActionKey,field,userId,score);
+        }
+    }
+
+    private void doDecreaseActivity(String userActionKey, String field, Long userId, Integer score) {
+        //1.删除标记用户已经执行过这个活跃度行为
+        stringRedisTemplate.opsForHash().delete(userActionKey, field);
+        //2.减少添加日活跃度
+        String todayKey = ACTIVITY_PREFIX + ":" + "day" + ":" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        stringRedisTemplate.opsForZSet().incrementScore(todayKey, String.valueOf(userId), score);
+        //3.减少月活跃度
+        String monthKey = ACTIVITY_PREFIX + ":" + "month" + ":" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
+        stringRedisTemplate.opsForZSet().incrementScore(monthKey,String.valueOf(userId), score);
     }
 
     private void addActivity(ActivityVo activityVo, String field,Integer score) {

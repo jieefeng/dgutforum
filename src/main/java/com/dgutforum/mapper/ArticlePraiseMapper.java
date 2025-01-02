@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Mapper
 public interface ArticlePraiseMapper extends BaseMapper<ArticlePraise> {
@@ -21,6 +22,6 @@ public interface ArticlePraiseMapper extends BaseMapper<ArticlePraise> {
 
     @Select("select * from article_praise " +
             "where article_id = #{articleId}")
-    Long getArticlePraiseByArticleId(Long articleId);
+    List<ArticlePraise> getArticlePraiseByArticleId(Long articleId);
 
 }

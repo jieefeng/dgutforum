@@ -20,6 +20,7 @@ public class ArticleConverter {
         article.setCategoryId(req.getCategoryId());
         article.setDeleted((short) 0);
         article.setContent(req.getContent());
+        article.setSummary(req.getSummary());
         return article;
     }
 }

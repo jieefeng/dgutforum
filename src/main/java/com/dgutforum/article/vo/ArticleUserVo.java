@@ -67,6 +67,8 @@ public class ArticleUserVo extends BaseDO {
      */
     private String CategoryName;
 
+    private String categoryId;
+
 
     /**
      * 摘要

@@ -1,7 +1,9 @@
 package com.dgutforum.article.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.dgutforum.activity.service.impl.ActivityServiceImpl;
 import com.dgutforum.article.entity.ArticleCollection;
+import com.dgutforum.article.entity.ArticlePraise;
 import com.dgutforum.article.entity.ReadHistory;
 import com.dgutforum.article.vo.PraiseVo;
 import com.dgutforum.article.req.ArticleUserIdReq;
@@ -9,16 +11,15 @@ import com.dgutforum.article.vo.ArticleUserVo;
 import com.dgutforum.article.entity.Article;
 import com.dgutforum.article.vo.BrowseHistoryVo;
 import com.dgutforum.article.service.ArticleWriteService;
+import com.dgutforum.comment.entity.CommentPraise;
 import com.dgutforum.common.result.Result;
 import com.dgutforum.context.ThreadLocalContext;
-import com.dgutforum.mapper.ArticleCollectionMapper;
-import com.dgutforum.mapper.ArticleMapper;
-import com.dgutforum.mapper.ReadHistoryMapper;
-import com.dgutforum.mapper.UserInfoMapper;
+import com.dgutforum.mapper.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,8 @@ public class ArticleController {
     private final ActivityServiceImpl activityServiceImpl;
     private final ArticleCollectionMapper articleCollectionMapper;
     private final UserInfoMapper userInfoMapper;
+    private final ArticlePraiseMapper articlePraiseMapper;
+    private final CommentPraiseMapper commentPraiseMapper;
 
     /**
      * 查询全部文章
@@ -171,6 +174,8 @@ public class ArticleController {
         return Result.success(articleUserVoList);
     }
 
+
+
     /**
      * 根据用户id查询点赞过的文章
      * @param praiseVo
@@ -184,7 +189,7 @@ public class ArticleController {
 
 
     /**
-     * 用户点赞 如果传入了commentId就是对评论 否则是对评论点赞
+     * 用户点赞文章
      * @param praiseVo
      * @return
      */
@@ -194,6 +199,40 @@ public class ArticleController {
         articleWriteService.praise(praiseVo);
         return Result.success();
     }
+
+    /**
+     * 用户是否点赞文章
+     * @param praiseVo
+     * @return
+     */
+    @PostMapping("isPraise")
+    @Operation(summary = "用户是否点赞")
+    public Result isPraise(@RequestBody PraiseVo praiseVo){
+        ArticlePraise articlePraise = new ArticlePraise();
+        LambdaQueryWrapper<ArticlePraise> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ArticlePraise::getArticleId,praiseVo.getArticleId())
+                    .eq(ArticlePraise::getUserId,ThreadLocalContext.getUserId());
+        ArticlePraise articlePraise1 = articlePraiseMapper.selectOne(queryWrapper);
+        if(articlePraise1 == null){
+            //用户未点赞文章
+            return Result.success(false);
+        } else {
+            return Result.success(true);
+        }
+    }
+
+    /**
+     * 取消点赞
+     * @param praiseVo
+     * @return
+     */
+    @PostMapping("/cancelPraise")
+    @Operation(summary = "取消点赞")
+    public Result cancelPraise(@RequestBody PraiseVo praiseVo){
+        articleWriteService.cancelPraise(praiseVo);
+        return Result.success();
+    }
+
 
     /**
      * 用户收藏文章
@@ -208,6 +247,39 @@ public class ArticleController {
     }
 
     /**
+     * 用户是否收藏文章
+     * @param articleCollection
+     * @return
+     */
+    @Operation(summary = "用户是否收藏文章")
+    @PostMapping("/isCollection")
+    public Result isCollection(@RequestBody ArticleCollection articleCollection){
+        LambdaQueryWrapper<ArticleCollection> articleCollectionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        articleCollectionLambdaQueryWrapper.eq(ArticleCollection::getArticleId,articleCollection.getArticleId())
+                        .eq(ArticleCollection::getUserId,ThreadLocalContext.getUserId());
+        ArticleCollection articleCollection1 = articleCollectionMapper.selectOne(articleCollectionLambdaQueryWrapper);
+        if(articleCollection1 == null){
+            //用户未收藏
+            return Result.success(false);
+        } else {
+            return Result.success(true);
+        }
+    }
+
+    /**
+     * 取消收藏
+     * @param articleCollection
+     * @return
+     */
+    @PostMapping("/cancelCollection")
+    @Operation(summary = "取消收藏")
+    public Result cancelCollection(@RequestBody ArticleCollection articleCollection){
+        articleWriteService.cannelCollection(articleCollection);
+        return Result.success();
+    }
+
+
+    /**
      * 根据用户Id一段内他的浏览记录
      * @param browseHistoryVo
      * @return
@@ -219,7 +291,73 @@ public class ArticleController {
         return Result.success(borwseHistoryWithTime);
     }
 
+    /**
+     * 点赞评论
+     * @param praiseVo
+     * @return
+     */
+    @PostMapping("praiseComment")
+    @Operation(summary = "点赞评论")
+    public Result praiseComment(@RequestBody PraiseVo praiseVo){
+        articleWriteService.praiseComment(praiseVo);
+        return Result.success();
+    }
 
+    /**
+     * 取消点赞评论
+     * @param praiseVo
+     * @return
+     */
+    @PostMapping("cancelPraiseComment")
+    @Operation(summary = " 取消点赞评论")
+    public Result cancelPraiseComment(@RequestBody PraiseVo praiseVo){
+        articleWriteService.cancelPraiseComment(praiseVo);
+        return Result.success();
+    }
+
+    /**
+     * 用户是否给评论点赞
+     * @param praiseVo
+     * @return
+     */
+    @PostMapping("/isPraiseComment")
+    @Operation(summary = "是否点赞评论")
+    public Result isPraiseComment(@RequestBody PraiseVo praiseVo){
+        LambdaQueryWrapper<CommentPraise> commentPraiseLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        commentPraiseLambdaQueryWrapper.eq(CommentPraise::getCommentId,praiseVo.getCommentId())
+                        .eq(CommentPraise::getUserId,ThreadLocalContext.getUserId());
+        CommentPraise commentPraise = commentPraiseMapper.selectOne(commentPraiseLambdaQueryWrapper);
+        if(commentPraise == null){
+            return Result.success(false);
+        } else {
+            return Result.success(true);
+        }
+    }
+
+    /**
+     * 删除文章
+     * @param article
+     * @return
+     */
+    @PostMapping("/article")
+    @Operation(summary = "删除文章")
+    public Result deleteArticle(@RequestBody Article article){
+        articleWriteService.deleteArticle(article.getId(),ThreadLocalContext.getUserId());
+        return Result.success();
+    }
+
+
+    /**
+     * 根据key查询
+     * @param key
+     * @return
+     */
+    @GetMapping("/search/{key}")
+    @Operation(summary = "模糊查询")
+    public Result search(String key){
+        List<ArticleUserVo> articleUserVoList = articleWriteService.searchByKey(key);
+        return Result.success(articleUserVoList);
+    }
 }
 
 

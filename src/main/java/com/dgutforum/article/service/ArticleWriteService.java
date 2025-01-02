@@ -12,6 +12,8 @@ import java.util.List;
 
 public interface ArticleWriteService extends IService<Article> {
 
+    void cannelCollection(ArticleCollection articleCollection);
+
     /**
      * 保存or更新文章
      *
@@ -63,6 +65,8 @@ public interface ArticleWriteService extends IService<Article> {
      */
     void praise(PraiseVo praiseVo);
 
+    void cancelPraise(PraiseVo praiseVo);
+
     /**
      * 查询全部文章
      * @return
@@ -83,4 +87,10 @@ public interface ArticleWriteService extends IService<Article> {
      * @param articleCollection
      */
     void collection(ArticleCollection articleCollection);
+
+    void praiseComment(PraiseVo praiseVo);
+
+    void cancelPraiseComment(PraiseVo praiseVo);
+
+    List<ArticleUserVo> searchByKey(String key);
 }

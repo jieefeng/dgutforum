@@ -16,7 +16,7 @@ public class Comment {
     private Long articleId;
     private Long userId;
     private String content;
-    private Long parise;
+    private Long praise;
     private short deleted;
     private Long topCommentId;
     private LocalDateTime createTime;

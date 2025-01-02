@@ -3,6 +3,7 @@ package com.dgutforum.activity.controller;
 import com.dgutforum.activity.service.ActivityService;
 import com.dgutforum.activity.vo.ActivityDto;
 import com.dgutforum.common.result.Result;
+import com.dgutforum.mapper.ArticlePraiseMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import java.util.List;
 public class ActivityController {
 
     private final ActivityService activityService;
+
 
     /**
      * 获取日排行榜
