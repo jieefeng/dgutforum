@@ -354,7 +354,7 @@ public class ArticleController {
      */
     @GetMapping("/search/{key}")
     @Operation(summary = "模糊查询")
-    public Result search(String key){
+    public Result search(@PathVariable String key){
         List<ArticleUserVo> articleUserVoList = articleWriteService.searchByKey(key);
         return Result.success(articleUserVoList);
     }

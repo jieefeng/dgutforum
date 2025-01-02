@@ -2,6 +2,7 @@ package com.dgutforum.mapper;
 
 import com.dgutforum.article.vo.ArticleUserVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -58,8 +59,9 @@ public interface ArticleUserMapper {
     @Select("select a.*, ui.username, ui.photo, cy.category_name " +
             "from article a left join user ui on a.user_id = ui.id " +
             "left join category cy on a.category_id = cy.id " +
-            "where a.title like concat('%', #{key}, '%')")
-    List<ArticleUserVo> searchByKey(String key);
+            "where a.title like CONCAT('%', #{key}, '%') ")
+    List<ArticleUserVo> searchByKey(@Param("key") String key);
+
 }
 
 
