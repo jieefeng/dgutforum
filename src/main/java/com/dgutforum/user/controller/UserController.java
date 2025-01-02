@@ -72,6 +72,19 @@ public class UserController {
         return Result.success();
     }
 
+    @PostMapping("/follow/status")
+    public Result followStatus(@RequestBody Follow follow){
+        log.info("查询关注状态follow:{}", follow);
+
+        boolean flag = userService.followStatus(follow);
+
+        if (flag){
+            return Result.success(true);
+        }else {
+            return Result.success(false);
+        }
+    }
+
     /**
     *   粉丝列表
     * */

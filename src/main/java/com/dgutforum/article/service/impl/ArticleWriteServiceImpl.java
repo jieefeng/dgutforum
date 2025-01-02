@@ -288,6 +288,9 @@ public class ArticleWriteServiceImpl extends ServiceImpl<ArticleMapper,Article> 
                     log.info("文章更新成功！ title={}", article.getTitle());
                 }
                 ArticleUserVo articleUserVo = queryArticleUserInfo(article.getId(),article.getUserId());
+
+
+
                 return articleUserVo;
             }
         });

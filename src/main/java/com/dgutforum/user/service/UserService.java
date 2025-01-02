@@ -28,4 +28,6 @@ public interface UserService {
     UserInfoVo getUserInfoByUserId(long id);
 
     List<FollowVo> follow_select(long id);
+
+    boolean followStatus(Follow follow);
 }

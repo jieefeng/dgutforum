@@ -124,5 +124,16 @@ public class UserServiceImpl implements UserService {
         return followVoList;
     }
 
+    @Override
+    public boolean followStatus(Follow follow) {
+
+        Follow follow1 = userMapper.selectFollow(follow);
+
+        if(follow1 != null){
+            return true;
+        }
+        else return false;
+    }
+
 
 }

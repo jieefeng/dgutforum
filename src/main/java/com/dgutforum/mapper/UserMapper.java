@@ -51,4 +51,7 @@ public interface UserMapper {
 
     @Select("select user_id from user_relation where follow_user_id = #{id}")
     List<Integer> follower_select(long id);
+
+    @Select("select * from user_relation where user_id = #{userId} and follow_user_id = #{followUserId} ")
+    Follow selectFollow(Follow follow);
 }
