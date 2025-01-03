@@ -339,7 +339,7 @@ public class ArticleController {
      * @param article
      * @return
      */
-    @PostMapping("/article")
+    @PostMapping("/deleteArticle")
     @Operation(summary = "删除文章")
     public Result deleteArticle(@RequestBody Article article){
         articleWriteService.deleteArticle(article.getId(),ThreadLocalContext.getUserId());
